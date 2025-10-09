@@ -24,7 +24,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     static final int MILLISECONDS_PER_FRAME = 20;
     // This is the length of each interval processed by the game in milliseconds.
 
-    static final int SPEED = 10; 
+    static int speed = 10; 
 
     static final int NUMBER_OF_COLORS = 4;
     // This is the number of different door colors.
@@ -37,12 +37,13 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
 
     static final int obstacleIntervals = 15; // This is a defined time period.
 
+    static final double SPAWN_FREQUENCY = 1;
+    // Number that influences how fast objects spawn
+
     int doorSpawnCooldown = 4 * obstacleIntervals;
     int keySpawnCooldown = 2 * obstacleIntervals;
     int zombieSpawnCooldown = (3 + 2 * random.nextInt(8)) * obstacleIntervals;
-
-    static final double SPAWN_FREQUENCY = 1;
-    // Number that influences how fast objects spawn
+    int speedUpCountdown = 8000 * obstacleIntervals; // 8000 × 15 milliseconds = 2 minutes
     
     Image playerImage;
     Image peopleIcon;
@@ -56,10 +57,10 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     Color[] colors = {Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW}; // Colors used
 
     javax.swing.Timer timer;
-
+    
     ArrayList<Obstacle> obstacles = new ArrayList<Obstacle>();
-    Obstacle removed = null;
-    int[] currentKeys = new int[NUMBER_OF_COLORS];
+    Obstacle removed = null; // Variable for holding the obstacle to be removed
+    int[] currentKeys = new int[NUMBER_OF_COLORS]; // Number of keys of each color
 
     int score = 0;
     int health = 0;
@@ -170,15 +171,15 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     }
 
     void spawnDoor() {
-        obstacles.add(new Door(random.nextInt(NUMBER_OF_LANES), -PLAYER_HEIGHT, SPEED));
+        obstacles.add(new Door(random.nextInt(NUMBER_OF_LANES), -PLAYER_HEIGHT));
     }
 
     void spawnKey() {
-        obstacles.add(new Key(random.nextInt(NUMBER_OF_LANES), -PLAYER_HEIGHT, SPEED));
+        obstacles.add(new Key(random.nextInt(NUMBER_OF_LANES), -PLAYER_HEIGHT));
     }
 
     void spawnZombie() {
-        obstacles.add(new Zombie(random.nextInt(NUMBER_OF_LANES), -PLAYER_HEIGHT, SPEED));
+        obstacles.add(new Zombie(random.nextInt(NUMBER_OF_LANES), -PLAYER_HEIGHT));
     }
 
     @Override
@@ -202,6 +203,13 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
             spawnZombie();
         }
 
+        // Countdown for speeding up. Speed is capped at 50
+        speedUpCountdown -= timer.getDelay();
+        if (!(speed >= 50) && speedUpCountdown < 1) {
+            speedUpCountdown += 16000 * obstacleIntervals; // 16000 * 15 milliseconds = 4 minutes
+            speed += 5;
+        }
+
         // Move obstacles down
         for (Obstacle obstacle : obstacles) {
             obstacle.move();
@@ -210,6 +218,8 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         if (removed != null) {
             obstacles.remove(removed);
         }
+
+        System.out.println(speed);
         
         repaint();
     }
@@ -234,7 +244,6 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     class Obstacle {
         int lane; // The lane in which this obstacle spawns, indexed from 0 from left to right
         int y; // The distance of this obstacle from the top edge of the frame
-        int speed;
         int color = 0;
         boolean passed = false; // Whether the player passed this obstacle
 
@@ -245,10 +254,9 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
          * @param y is its y-position, or how far it is from the top of the frame.
          * @param speed is its speed.
          */
-        Obstacle(int lane, int y, int speed) {
+        Obstacle(int lane, int y) {
             this.lane = lane;
             this.y = y;
-            this.speed = speed;
         }
 
         void move() {
@@ -260,8 +268,8 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     }
 
     class Door extends Obstacle {
-        Door(int lane, int y, int speed) {
-            super(lane, y, speed);
+        Door(int lane, int y) {
+            super(lane, y);
             color = random.nextInt(NUMBER_OF_COLORS);
         }
 
@@ -283,8 +291,8 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     }
 
     class Key extends Obstacle {
-        Key(int lane, int y, int speed) {
-            super(lane, y, speed);
+        Key(int lane, int y) {
+            super(lane, y);
             color = random.nextInt(NUMBER_OF_COLORS);
         }
 
@@ -301,8 +309,8 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     }
 
     class Zombie extends Obstacle {
-        Zombie(int lane, int y, int speed) {
-            super(lane, y, speed);
+        Zombie(int lane, int y) {
+            super(lane, y);
         }
 
         void move() {
