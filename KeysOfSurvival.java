@@ -219,9 +219,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         if (removed != null) {
             obstacles.remove(removed);
         }
-
-        System.out.println(speed);
-        
+                
         repaint();
     }
 
