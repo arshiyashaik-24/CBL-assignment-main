@@ -64,6 +64,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
 
     int score = 0;
     int health = 0;
+    int doorsOpened = 0;
 
     KeysOfSurvival() {
         setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
@@ -282,7 +283,10 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
                     } else {
                         currentKeys[color]--;
                         score++;
-                        health++;
+                        doorsOpened++;
+                        if (doorsOpened % 5 == 0) {
+                            health += 1;
+                        }
                     }
                 }
                 passed = true;
