@@ -72,6 +72,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         frame.add(this); // Connects the JPanel and JFrame
         frame.setResizable(false);
         frame.pack(); // Sets the size of the frame
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
         frame.addKeyListener(this);
