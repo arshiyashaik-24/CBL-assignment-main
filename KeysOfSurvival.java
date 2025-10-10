@@ -11,14 +11,14 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     JPanel panel = this; // Reference to the game panel
     Random random = new Random(); // Used for randomly generating obstacles.
 
-    static final int FRAME_WIDTH = 414;
-    static final int FRAME_HEIGHT = 738;
+    static final int FRAME_WIDTH = 675;
+    static final int FRAME_HEIGHT = 1200;
 
     static final int NUMBER_OF_LANES = 3;
 
-    static final int PLAYER_WIDTH = Math.min(FRAME_WIDTH / NUMBER_OF_LANES, 80);
-    static final int PLAYER_HEIGHT = Math.min(FRAME_WIDTH / NUMBER_OF_LANES, 80);
-    // Width is 80, unless the lanes are too thin.
+    static final int PLAYER_WIDTH = Math.min(FRAME_WIDTH / NUMBER_OF_LANES, 160);
+    static final int PLAYER_HEIGHT = Math.min(FRAME_WIDTH / NUMBER_OF_LANES, 160);
+    // Width is 160, unless the lanes are too thin.
 
     static final int PLAYER_Y = 600;
 
@@ -131,7 +131,14 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         }
 
         // Draw obstacles
+        ArrayList<Obstacle> passedObstacles = new ArrayList<>();
+        // Obstacles that are drawn after the player is drawn.
+
         for (Obstacle obstacle : obstacles) {
+            if (obstacle.y > PLAYER_Y) {
+                passedObstacles.add(obstacle);
+                continue;
+            }
             Image image = zombieImage;
             if (obstacle instanceof Door) {
                 image = doorImages[obstacle.color];
@@ -153,6 +160,21 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
             PLAYER_WIDTH,
             PLAYER_HEIGHT,
             this);
+
+        for (Obstacle obstacle : passedObstacles) {
+            Image image = zombieImage;
+            if (obstacle instanceof Door) {
+                image = doorImages[obstacle.color];
+            } else if (obstacle instanceof Key) {
+                image = keyImages[obstacle.color];
+            }
+            g.drawImage(image,
+                ((FRAME_WIDTH / NUMBER_OF_LANES * (2 * obstacle.lane + 1) - PLAYER_WIDTH)) / 2,
+                obstacle.y,
+                PLAYER_WIDTH,
+                PLAYER_HEIGHT, // For now, obstacles have identical dimensions to player.
+                this);
+        }
         
         // Write score
         g.setColor(Color.BLACK);
