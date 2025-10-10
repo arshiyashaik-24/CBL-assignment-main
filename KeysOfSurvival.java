@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.*;
 import javax.swing.*;
 
@@ -45,7 +46,13 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     int zombieSpawnCooldown = (3 + 2 * random.nextInt(8)) * obstacleIntervals;
     int speedUpCountdown = 8000 * obstacleIntervals; // 8000 × 15 milliseconds = 2 minutes
     
-    Image playerImage;
+    static final int PLAYER_ANIMATION_DURATION = 4;
+    static int playerAnimationCountdown = PLAYER_ANIMATION_DURATION;
+    static int playerAnimationFrame = 0;
+    
+    static final int NUMBER_OF_PLAYER_SPRITES = new File("Images/Player").listFiles().length;
+
+    Image[] playerImage = new Image[NUMBER_OF_PLAYER_SPRITES];
     Image peopleIcon;
     Image heartIcon;
     Image zombieImage;
@@ -85,7 +92,10 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     }
 
     void loadImages() {
-        playerImage = new ImageIcon("Images/Player.png").getImage();
+        for (int i = 0; i < NUMBER_OF_PLAYER_SPRITES; i++) {
+            playerImage[i] = new ImageIcon("Images/Player/" + (i + 1) + ".png").getImage();
+        }
+
         zombieImage = new ImageIcon("Images/Zombie.png").getImage();
         peopleIcon = new ImageIcon("Images/Icons/People.png").getImage();
         heartIcon = new ImageIcon("Images/Icons/Heart.png").getImage();
@@ -137,7 +147,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         }
 
         // Draw player
-        g.drawImage(playerImage,
+        g.drawImage(playerImage[playerAnimationFrame],
             ((FRAME_WIDTH / NUMBER_OF_LANES * (2 * currentLane + 1) - PLAYER_WIDTH)) / 2,
             PLAYER_Y,
             PLAYER_WIDTH,
@@ -205,10 +215,16 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         }
 
         // Countdown for speeding up. Speed is capped at 50
-        speedUpCountdown -= timer.getDelay();
+        speedUpCountdown -= 1;
         if (!(speed >= 50) && speedUpCountdown < 1) {
             speedUpCountdown += 16000 * obstacleIntervals; // 16000 * 15 milliseconds = 4 minutes
             speed += 5;
+        }
+
+        playerAnimationCountdown -= 1;
+        if (playerAnimationCountdown < 1) {
+            playerAnimationCountdown += PLAYER_ANIMATION_DURATION;
+            playerAnimationFrame = (playerAnimationFrame + 1) % NUMBER_OF_PLAYER_SPRITES;
         }
 
         // Move obstacles down
