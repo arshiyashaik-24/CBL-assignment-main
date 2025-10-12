@@ -35,13 +35,15 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
 
     static final int OBSTACLE_INTERVALS = 15; // This is a defined time period.
 
-    static final double SPAWN_FREQUENCY = 1;
+    static final double SPAWN_FREQUENCY = 0.1;
     // Number that influences how fast objects spawn
 
     int doorSpawnCooldown = 4 * OBSTACLE_INTERVALS;
     int keySpawnCooldown = 2 * OBSTACLE_INTERVALS;
     int zombieSpawnCooldown = (3 + 2 * random.nextInt(8)) * OBSTACLE_INTERVALS;
-    int speedUpCountdown = 8000 * OBSTACLE_INTERVALS; // 8000 × 15 milliseconds = 2 minutes
+    
+    static final int SPEED_UP_COUNTDOWN_TIME = 600; // One minute, when multiplied with secs / frame
+    int speedUpCountdown = SPEED_UP_COUNTDOWN_TIME;
     
     static final int PLAYER_ANIMATION_DURATION = 4;
     static int playerAnimationCountdown = PLAYER_ANIMATION_DURATION;
@@ -189,6 +191,8 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
                 }
             }
         }
+
+        System.out.println(speed);
     }
 
     void spawnDoor() {
@@ -206,19 +210,19 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     @Override
     public void actionPerformed(ActionEvent e) {
         // Countdown for each obstacle type. If countdown reaches 0, spawn that obstacle.
-        doorSpawnCooldown -= SPAWN_FREQUENCY;
+        doorSpawnCooldown -= speed * SPAWN_FREQUENCY;
         if (doorSpawnCooldown < 1) {
             doorSpawnCooldown += 4 * OBSTACLE_INTERVALS;
             spawnDoor();
         }
         
-        keySpawnCooldown -= SPAWN_FREQUENCY;
+        keySpawnCooldown -= speed * SPAWN_FREQUENCY;
         if (keySpawnCooldown < 1) {
             keySpawnCooldown += 4 * OBSTACLE_INTERVALS;
             spawnKey();
         }
 
-        zombieSpawnCooldown -= SPAWN_FREQUENCY;
+        zombieSpawnCooldown -= speed * SPAWN_FREQUENCY;
         if (zombieSpawnCooldown < 1) {
             zombieSpawnCooldown += (2 + 2 * random.nextInt(8)) * OBSTACLE_INTERVALS;
             spawnZombie();
@@ -227,8 +231,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         // Countdown for speeding up. Speed is capped at 50
         speedUpCountdown -= 1;
         if (!(speed >= 50) && speedUpCountdown < 1) {
-            speedUpCountdown += 16000 * OBSTACLE_INTERVALS; // 16000 * 15 milliseconds = 4 minutes
-            speed += 5;
+            speedUpCountdown += SPEED_UP_COUNTDOWN_TIME;
         }
 
         playerAnimationCountdown -= 1;
