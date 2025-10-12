@@ -107,6 +107,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g); // Initial painting
+        g.setFont(new Font(g.getFont().getFontName(), Font.PLAIN, 20)); // Increase font size
         
         g.setColor(COLOR_1); // Color background
         g.fillRect(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
@@ -175,26 +176,26 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         
         // Write score
         g.setColor(Color.BLACK);
-        g.drawImage(peopleIcon, 20, 12, 5, 10, this);
-        g.drawString("People saved: " + score, 28, 20);
+        g.drawImage(peopleIcon, 20, 12, 20, 20, this);
+        g.drawString("People saved: " + score, 42, 28);
 
         // Show health
-        if (health > 8) { // If there are too many hearts, show them differently
-            g.drawImage(heartIcon, 20, 30, 10, 10, this);
-            g.drawString("× " + health, 33, 39);
+        if (health > 0) { // If there are too many hearts, show them differently
+            g.drawImage(heartIcon, 20, 30, 20, 20, this);
+            g.drawString("× " + health, 46, 46);
         } else {
             for (int i = 0; i < health; i++) {
-                g.drawImage(heartIcon, 20 + 15 * i, 30, 10, 10, this);
+                g.drawImage(heartIcon, 20 + 30 * i, 30, 20, 20, this);
             }
         }
 
         // Show keys
         for (int i = 0; i < NUMBER_OF_COLORS; i++) {
             if (currentKeys[i] > 0) {
-                g.drawImage(keyIcons[i], FRAME_WIDTH - 135 + 30 * i, 10, 20, 10, this);
+                g.drawImage(keyIcons[i], FRAME_WIDTH - 210 + 50 * i, 10, 40, 20, this);
                 if (currentKeys[i] > 1) {
                     g.setColor(colors[i]);
-                    g.drawString("" + currentKeys[i], FRAME_WIDTH - 135 + 30 * i, 30);
+                    g.drawString("" + currentKeys[i], FRAME_WIDTH - 205 + 50 * i, 50);
                 }
             }
         }
@@ -317,7 +318,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
                         currentKeys[color]--;
                         score++;
                         doorsOpened++;
-                        if (doorsOpened % 5 == 0) {
+                        if (doorsOpened % 1 == 0) {
                             health += 1;
                         }
                     }
