@@ -1,12 +1,9 @@
-import java.awt.*;
-import java.awt.event.*;
-import java.io.File;
-import java.util.*;
+import java.awt.*;       // For Color, Image, Dimension
+import java.awt.event.*; // For ActionListener, KeyListener
+import java.io.File;     // For File
+import java.util.*;      // For Random, ArrayList
 import javax.swing.*;
 
-/**
- * .
- */
 public class KeysOfSurvival extends JPanel implements ActionListener, KeyListener {
     JPanel panel = this; // Reference to the game panel
     Random random = new Random(); // Used for randomly generating obstacles.
@@ -36,15 +33,15 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
 
     static int currentLane = NUMBER_OF_LANES / 2;
 
-    static final int obstacleIntervals = 15; // This is a defined time period.
+    static final int OBSTACLE_INTERVALS = 15; // This is a defined time period.
 
     static final double SPAWN_FREQUENCY = 1;
     // Number that influences how fast objects spawn
 
-    int doorSpawnCooldown = 4 * obstacleIntervals;
-    int keySpawnCooldown = 2 * obstacleIntervals;
-    int zombieSpawnCooldown = (3 + 2 * random.nextInt(8)) * obstacleIntervals;
-    int speedUpCountdown = 8000 * obstacleIntervals; // 8000 × 15 milliseconds = 2 minutes
+    int doorSpawnCooldown = 4 * OBSTACLE_INTERVALS;
+    int keySpawnCooldown = 2 * OBSTACLE_INTERVALS;
+    int zombieSpawnCooldown = (3 + 2 * random.nextInt(8)) * OBSTACLE_INTERVALS;
+    int speedUpCountdown = 8000 * OBSTACLE_INTERVALS; // 8000 × 15 milliseconds = 2 minutes
     
     static final int PLAYER_ANIMATION_DURATION = 4;
     static int playerAnimationCountdown = PLAYER_ANIMATION_DURATION;
@@ -220,26 +217,26 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         // Countdown for each obstacle type. If countdown reaches 0, spawn that obstacle.
         doorSpawnCooldown -= SPAWN_FREQUENCY;
         if (doorSpawnCooldown < 1) {
-            doorSpawnCooldown += 4 * obstacleIntervals;
+            doorSpawnCooldown += 4 * OBSTACLE_INTERVALS;
             spawnDoor();
         }
         
         keySpawnCooldown -= SPAWN_FREQUENCY;
         if (keySpawnCooldown < 1) {
-            keySpawnCooldown += 4 * obstacleIntervals;
+            keySpawnCooldown += 4 * OBSTACLE_INTERVALS;
             spawnKey();
         }
 
         zombieSpawnCooldown -= SPAWN_FREQUENCY;
         if (zombieSpawnCooldown < 1) {
-            zombieSpawnCooldown += (2 + 2 * random.nextInt(8)) * obstacleIntervals;
+            zombieSpawnCooldown += (2 + 2 * random.nextInt(8)) * OBSTACLE_INTERVALS;
             spawnZombie();
         }
 
         // Countdown for speeding up. Speed is capped at 50
         speedUpCountdown -= 1;
         if (!(speed >= 50) && speedUpCountdown < 1) {
-            speedUpCountdown += 16000 * obstacleIntervals; // 16000 * 15 milliseconds = 4 minutes
+            speedUpCountdown += 16000 * OBSTACLE_INTERVALS; // 16000 * 15 milliseconds = 4 minutes
             speed += 5;
         }
 
