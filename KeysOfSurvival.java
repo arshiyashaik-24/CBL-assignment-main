@@ -8,8 +8,8 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     JPanel panel = this; // Reference to the game panel
     Random random = new Random(); // Used for randomly generating obstacles.
 
-    static final int FRAME_WIDTH = 675;
-    static final int FRAME_HEIGHT = 1200;
+    static final int FRAME_WIDTH = 600;
+    static final int FRAME_HEIGHT = 960;
 
     static final int NUMBER_OF_LANES = 3;
 
@@ -49,6 +49,8 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     
     static final int NUMBER_OF_PLAYER_SPRITES = new File("Images/Player").listFiles().length;
 
+    Image backgroundImage;
+    int backgroundPosition = 0; // Controls movement of background image 
     Image[] playerImage = new Image[NUMBER_OF_PLAYER_SPRITES];
     Image peopleIcon;
     Image heartIcon;
@@ -93,6 +95,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
             playerImage[i] = new ImageIcon("Images/Player/" + (i + 1) + ".png").getImage();
         }
 
+        backgroundImage = new ImageIcon("Images/Background.png").getImage();
         zombieImage = new ImageIcon("Images/Zombie.png").getImage();
         peopleIcon = new ImageIcon("Images/Icons/People.png").getImage();
         heartIcon = new ImageIcon("Images/Icons/Heart.png").getImage();
@@ -108,25 +111,12 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     public void paintComponent(Graphics g) {
         super.paintComponent(g); // Initial painting
         g.setFont(new Font(g.getFont().getFontName(), Font.PLAIN, 20)); // Increase font size
-        
-        g.setColor(COLOR_1); // Color background
-        g.fillRect(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
-        
-        g.setColor(COLOR_2); // Color alternating lanes
-        for (int i = 1; i < NUMBER_OF_LANES; i += 2) {
-            g.fillRect(i * FRAME_WIDTH / NUMBER_OF_LANES,
-                0,
-                FRAME_WIDTH / NUMBER_OF_LANES,
-                FRAME_HEIGHT);
-        }
 
-        g.setColor(Color.GRAY); // Draw lane borders
-        for (int i = 1; i < NUMBER_OF_LANES; i++) {
-            g.drawLine(i * FRAME_WIDTH / NUMBER_OF_LANES,
-                0,
-                i * FRAME_WIDTH / NUMBER_OF_LANES,
-                FRAME_HEIGHT);
-        }
+        // Draw background
+        // Background needs to be drawn twice to give an "endless background" illusion .
+        g.drawImage(backgroundImage, 0, backgroundPosition, FRAME_WIDTH, FRAME_HEIGHT, this);
+        g.drawImage(backgroundImage,
+            0, backgroundPosition - FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT, this);
 
         // Draw obstacles
         ArrayList<Obstacle> passedObstacles = new ArrayList<>();
@@ -175,7 +165,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         }
         
         // Write score
-        g.setColor(Color.BLACK);
+        g.setColor(Color.WHITE);
         g.drawImage(peopleIcon, 20, 12, 20, 20, this);
         g.drawString("People saved: " + score, 42, 28);
 
@@ -247,6 +237,9 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
             playerAnimationFrame = (playerAnimationFrame + 1) % NUMBER_OF_PLAYER_SPRITES;
         }
 
+        // Move background down
+        backgroundPosition += speed;
+        backgroundPosition %= FRAME_HEIGHT;
         // Move obstacles down
         for (Obstacle obstacle : obstacles) {
             obstacle.move();
