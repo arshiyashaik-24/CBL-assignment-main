@@ -180,7 +180,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         g.drawString("People saved: " + score, 42, 28);
 
         // Show health
-        if (health > 0) { // If there are too many hearts, show them differently
+        if (health > 8) { // If there are too many hearts, show them differently
             g.drawImage(heartIcon, 20, 30, 20, 20, this);
             g.drawString("× " + health, 46, 46);
         } else {
@@ -318,7 +318,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
                         currentKeys[color]--;
                         score++;
                         doorsOpened++;
-                        if (doorsOpened % 1 == 0) {
+                        if (doorsOpened % 5 == 0) {
                             health += 1;
                         }
                     }
