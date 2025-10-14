@@ -11,28 +11,28 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     static final int NUMBER_OF_LANES = 3;
     // These are the number of lanes that are taken into account for the game.
     
-    static int currentLane = NUMBER_OF_LANES / 2;
-    // The player starts in the middle lane
-    
     static final int FRAME_WIDTH = 600;
     static final int FRAME_HEIGHT = 960;
     // These are the frame dimensions.
-
+    
     static final int PLAYER_WIDTH = 150;
     static final int PLAYER_HEIGHT = 150;
     // These are the dimensions of the player character.
-
+    
     static final int PLAYER_Y = 600;
     // The vertical position in which the player is rendered
-
+    
     static final int MILLISECONDS_PER_FRAME = 20;
     // This is the length of each interval processed by the game in milliseconds.
 
-    static int speed = 10; 
-    // A measure of how fast the game runs.
-
     static final int NUMBER_OF_COLORS = 4;
     // This is the number of different door colors used in the game.
+    
+    static int speed = 10; 
+    // A measure of how fast the game runs. The initial speed is set here.
+    
+    static int currentLane = NUMBER_OF_LANES / 2;
+    // The player starts in the middle lane
 
     int doorSpawnCooldown = 600;
     int keySpawnCooldown = 300;
@@ -54,20 +54,21 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     Image heartIcon;
     Image zombieImage;
     Image[] doorImages = new Image[NUMBER_OF_COLORS];
+    Image[] doorImages2 = new Image[NUMBER_OF_COLORS]; // opened door images
     Image[] keyImages = new Image[NUMBER_OF_COLORS];
     Image[] keyIcons = new Image[NUMBER_OF_COLORS];
 
     static final String[] COLOR_NAMES = {"Red", "Green", "Blue", "Yellow"}; // Names of colors used
     static final Color[] COLORS = {Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW}; // Colors used
-
-    javax.swing.Timer timer;
     
     ArrayDeque<Obstacle> obstacles = new ArrayDeque<Obstacle>();
     int[] currentKeys = new int[NUMBER_OF_COLORS]; // Number of keys of each color
-
+    
     int score = 0;
     int health = 0;
     int doorsOpened = 0;
+    
+    javax.swing.Timer timer;
 
     KeysOfSurvival() {
         setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
@@ -99,6 +100,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
 
         for (int i = 0; i < NUMBER_OF_COLORS; i++) {
             doorImages[i] = new ImageIcon("Images/Doors/" + COLOR_NAMES[i] + ".png").getImage();
+            doorImages2[i] = new ImageIcon("Images/Doors/" + COLOR_NAMES[i] + "2.png").getImage();
             keyImages[i] = new ImageIcon("Images/Keys/" + COLOR_NAMES[i] + ".png").getImage();
             keyIcons[i] = new ImageIcon("Images/Icons/Keys/" + COLOR_NAMES[i] + ".png").getImage();
         }
@@ -129,9 +131,13 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
                     PLAYER_HEIGHT,
                     this);
             }
-            Image image = zombieImage;
+            Image image = zombieImage; // Let the zombie image be default
             if (obstacle instanceof Door) {
-                image = doorImages[obstacle.color];
+                if (((Door) obstacle).opened) {
+                    image = doorImages2[obstacle.color];
+                } else {
+                    image = doorImages[obstacle.color];
+                }
             } else if (obstacle instanceof Key) {
                 image = keyImages[obstacle.color];
             }
@@ -284,6 +290,8 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     }
 
     class Door extends Obstacle {
+        boolean opened = false;
+
         Door(int lane, int y) {
             super(lane, y);
             color = random.nextInt(NUMBER_OF_COLORS);
@@ -296,6 +304,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
                     if (currentKeys[color] == 0) {
                         gameOver();
                     } else {
+                        opened = true;
                         currentKeys[color]--;
                         score++;
                         doorsOpened++;
