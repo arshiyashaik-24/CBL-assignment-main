@@ -191,8 +191,6 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
                 }
             }
         }
-
-        System.out.println(speed);
     }
 
     void spawnDoor() {
@@ -372,9 +370,5 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         timer.stop();
         JOptionPane.showMessageDialog(panel, "Game Over!\nYour Score: " + score);
         System.exit(0);
-    }
-
-    public static void main(String[] args) {
-        new KeysOfSurvival();
     }
 }
