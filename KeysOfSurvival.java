@@ -119,7 +119,6 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
 
         // Draw obstacles and player
         for (Obstacle obstacle : obstacles) {
-            System.out.println(obstacle.y);
             if (obstacle.y > PLAYER_Y && !playerDrawn) {
                 playerDrawn = true;
                 // Draw player
@@ -146,7 +145,6 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
                     this);
             }
         }
-        System.out.println();
 
         if (!playerDrawn) {
             // Draw player
