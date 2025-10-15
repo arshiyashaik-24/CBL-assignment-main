@@ -3,13 +3,36 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class Main extends JPanel {
+    private float fadeOpacity = 0f;
+    private float glowPhase = 0f; // for pulsing glow
     private JFrame frame;
     private JButton startButton;
     private JComboBox<Integer> laneSelector;
-    private JLabel titleLabel, laneLabel;
+    private JLabel laneLabel;
+    private Image backgroundImage;
 
     public static void main(String[] args) {
         new Main();
+    }
+
+    private void startFadeIn() {
+        Timer fadeTimer = new Timer(25, e -> {
+            fadeOpacity += 0.03f;
+            if (fadeOpacity >= 1f) {
+                fadeOpacity = 1f;
+                ((Timer) e.getSource()).stop();
+            }
+            repaint();
+        });
+        fadeTimer.start();
+    }
+
+    private void startGlowAnimation() {
+        Timer glowTimer = new Timer(50, e -> {
+            glowPhase += 0.15f;
+            repaint();
+        });
+        glowTimer.start();
     }
 
     public Main() {
@@ -20,57 +43,92 @@ public class Main extends JPanel {
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
 
-        // Panel setup
-        setBackground(Color.BLACK);
+        // Load your title screen background image
+        backgroundImage = new ImageIcon("Images/MenuBackground.png").getImage();
         setLayout(null);
 
-        // Title
-        titleLabel = new JLabel("KEYS OF SURVIVAL");
-        titleLabel.setFont(new Font("Impact", Font.BOLD, 48));
-        titleLabel.setForeground(Color.WHITE);
-        titleLabel.setBounds(60, 150, 600, 100);
-        add(titleLabel);
-
-        // Start button
-        startButton = new JButton("START");
-        startButton.setFont(new Font("Arial Black", Font.BOLD, 40));
-        startButton.setFocusPainted(false);
-        startButton.setBounds(150, 400, 300, 100);
-        startButton.setBackground(new Color(255, 80, 80));
+        // START button — transparent + over player's hands area
+        startButton = new JButton("     ");
+        startButton.setFont(new Font("Press Start 2P", Font.BOLD, 30)); // use a pixel font if available
         startButton.setForeground(Color.WHITE);
-        startButton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 4));
+        startButton.setBounds(190, 520, 220, 80); // position to match hands area
+
+        // Transparency 
+        startButton.setContentAreaFilled(false);
+        startButton.setOpaque(false);
+        startButton.setBorderPainted(false);
+        startButton.setFocusPainted(false);
         startButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
         add(startButton);
 
-        // Lane label
-        laneLabel = new JLabel("Number of Lanes:");
-        laneLabel.setFont(new Font("Arial", Font.BOLD, 22));
-        laneLabel.setForeground(Color.WHITE);
-        laneLabel.setBounds(150, 550, 250, 30);
+        // LANE SELECTOR SECTION
+        laneLabel = new JLabel("LANES");
+        laneLabel.setFont(new Font("Minecraftia", Font.BOLD, 20)); // pixel-style font
+        laneLabel.setForeground(new Color(230, 230, 210)); // bone-white to match selector text
+        laneLabel.setBounds(210, 640, 150, 30);
         add(laneLabel);
 
-        // Lane selector
-        Integer[] lanes = { 3, 4, 5 };
-        laneSelector = new JComboBox<>(lanes);
-        laneSelector.setFont(new Font("Arial", Font.PLAIN, 22));
-        laneSelector.setBounds(370, 550, 60, 35);
-        laneSelector.setBackground(Color.WHITE);
+        laneSelector = new JComboBox<>(new Integer[]{3, 4, 5});
+        laneSelector.setBorder(BorderFactory.createLineBorder(new Color(230, 230, 210), 2)); // bone-white border
+        laneSelector.setFont(new Font("Press Start 2P", Font.PLAIN, 18)); // pixel-style font
+        laneSelector.setForeground(new Color(230, 230, 210));
+        laneSelector.setBackground(new Color(50, 30, 20));
+        laneSelector.setFocusable(false);
+        laneSelector.setBounds(300, 640, 80, 35);
         add(laneSelector);
 
         // Button action
         startButton.addActionListener(e -> startGame());
 
-        // Add panel and show frame
         frame.add(this);
         frame.setVisible(true);
+
+        // Start animations
+        startFadeIn();
+        startGlowAnimation();
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g.create();
+
+        // Fade effect
+        Composite original = g2.getComposite();
+        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, fadeOpacity));
+
+        // Background
+        g2.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+
+        // rusty plate behind lane selector
+        g2.setColor(new Color(50, 30, 20, 200)); 
+        g2.fillRoundRect(175, 620, 235, 70, 20, 20);
+
+        // bone-colored outline with subtle rust glow
+        g2.setColor(new Color(230, 230, 210)); // bone-white border
+        g2.setStroke(new BasicStroke(3)); 
+        g2.drawRoundRect(175, 620, 235, 70, 20, 20);
+
+        // optional: tiny rusty highlight for extra texture
+        g2.setColor(new Color(255, 120, 80, 100)); 
+        g2.setStroke(new BasicStroke(2));
+        g2.drawRoundRect(178, 623, 229, 64, 20, 20);
+
+        // Pulsing glow around start button
+        int glowAlpha = (int) (100 + 80 * Math.sin(glowPhase));
+        g2.setColor(new Color(255, 180, 150, glowAlpha));
+        g2.setStroke(new BasicStroke(5f));
+        g2.drawRoundRect(185, 500, 210, 80, 25, 25);
+
+        g2.setComposite(original);
+        g2.dispose();
     }
 
     private void startGame() {
         int chosenLanes = (int) laneSelector.getSelectedItem();
-        frame.dispose(); // close the menu window
-
-        // make NUMBER_OF_LANES adjustable in the game
         KeysOfSurvival.NUMBER_OF_LANES = chosenLanes;
+        frame.dispose(); // close menu
         new KeysOfSurvival();
     }
 }
