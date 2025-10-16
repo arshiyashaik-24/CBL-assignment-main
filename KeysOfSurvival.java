@@ -8,7 +8,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     JPanel panel = this; // Reference to the game panel
     Random random = new Random(); // Used for randomly generating obstacles.
 
-    public static int NUMBER_OF_LANES = 3;
+    final int NUMBER_OF_LANES;
     // These are the number of lanes that are taken into account for the game.
     
     static final int FRAME_WIDTH = 600;
@@ -31,7 +31,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     static int speed = 10; 
     // A measure of how fast the game runs. The initial speed is set here.
     
-    static int currentLane = NUMBER_OF_LANES / 2;
+    static int currentLane;
     // The player starts in the middle lane
 
     int doorSpawnCooldown = 600;
@@ -70,7 +70,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     
     javax.swing.Timer timer;
 
-    KeysOfSurvival() {
+    KeysOfSurvival(int numberOfLanes) {
         setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
 
         JFrame frame = new JFrame("Keys of Survival");
@@ -83,17 +83,19 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
 
         frame.addKeyListener(this);
 
-        loadImages();
+        NUMBER_OF_LANES = numberOfLanes;
+        currentLane = numberOfLanes / 2;
+        loadImages(numberOfLanes);
         timer = new javax.swing.Timer(MILLISECONDS_PER_FRAME, this);
         timer.start();
     }
 
-    void loadImages() {
+    void loadImages(int numberOfLanes) {
         for (int i = 0; i < NUMBER_OF_PLAYER_SPRITES; i++) {
             playerImage[i] = new ImageIcon("Images/Player/" + (i + 1) + ".png").getImage();
         }
 
-        backgroundImage = new ImageIcon("Images/Background.png").getImage();
+        backgroundImage = new ImageIcon("Images/Backgrounds/Background" + numberOfLanes + ".png").getImage();
         zombieImage = new ImageIcon("Images/Zombie.png").getImage();
         peopleIcon = new ImageIcon("Images/Icons/People.png").getImage();
         heartIcon = new ImageIcon("Images/Icons/Heart.png").getImage();
