@@ -71,7 +71,6 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         JFrame frame = new JFrame("Keys of Survival");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Needed to end program
         frame.add(this); // Connects the JPanel and JFrame
-        frame.setResizable(false);
         frame.pack(); // Sets the size of the frame
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
@@ -150,7 +149,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         }
 
         if (!playerDrawn) {
-            // Draw player
+            // Draw player, if it was not drawn yet
             g.drawImage(playerImage[playerAnimationFrame],
                 ((FRAME_WIDTH / NUMBER_OF_LANES * (2 * currentLane + 1) - PLAYER_WIDTH)) / 2,
                 PLAYER_Y,
@@ -358,7 +357,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         }
         timer.stop();
         int option = JOptionPane.showConfirmDialog(this,
-                "Game Over!\nYour Score:" + score + "\nDo you want to go to the main menu??",
+                "Game Over!\nYour Score:" + score + "\nDo you want to go to the main menu?",
                 "Game Over!",
                 JOptionPane.YES_NO_OPTION);
         JFrame gameFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
