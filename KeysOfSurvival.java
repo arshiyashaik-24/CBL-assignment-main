@@ -369,6 +369,8 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         }
         timer.stop();
         JOptionPane.showMessageDialog(panel, "Game Over!\nYour Score: " + score);
-        System.exit(0);
+        JFrame gameFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        gameFrame.dispose();
+        new Main();
     }
 }
