@@ -34,12 +34,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     static int currentLane;
     // The player starts in the middle lane
 
-    int doorSpawnCooldown = 600;
-    int keySpawnCooldown = 300;
-    int zombieSpawnCooldown = 450 + 300 * random.nextInt(8);
-    
-    static final int SPEED_UP_COUNTDOWN_TIME = 600; // One minute roughly
-    int speedUpCountdown = SPEED_UP_COUNTDOWN_TIME;
+    Countdowns countdowns = new Countdowns();
     
     static final int PLAYER_ANIMATION_DURATION = 4;
     static int playerAnimationCountdown = PLAYER_ANIMATION_DURATION;
@@ -205,29 +200,23 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // Countdown for each obstacle type. If countdown reaches 0, spawn that obstacle.
-        doorSpawnCooldown -= speed;
-        if (doorSpawnCooldown < 1) {
-            doorSpawnCooldown += 600;
-            spawnDoor();
-        }
-        
-        keySpawnCooldown -= speed;
-        if (keySpawnCooldown < 1) {
-            keySpawnCooldown += 600;
-            spawnKey();
-        }
+        byte countdownAction = countdowns.countdown(speed);
 
-        zombieSpawnCooldown -= speed;
-        if (zombieSpawnCooldown < 1) {
-            zombieSpawnCooldown += 300 + 300 * random.nextInt(8);
+        if (countdownAction >= 8) {
+            countdownAction -= 8;
+            speed += 5;
+        }
+        if (countdownAction >= 4) {
+            countdownAction -= 4;
             spawnZombie();
         }
-
-        // Countdown for speeding up. Speed is capped at 50
-        speedUpCountdown -= 1;
-        if (!(speed >= 50) && speedUpCountdown < 1) {
-            speedUpCountdown += SPEED_UP_COUNTDOWN_TIME;
+        if (countdownAction >= 2) {
+            countdownAction -= 2;
+            spawnKey();
+        }
+        if (countdownAction >= 1) {
+            countdownAction -= 1;
+            spawnDoor();
         }
 
         playerAnimationCountdown -= 1;
@@ -368,9 +357,14 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
             }
         }
         timer.stop();
-        JOptionPane.showMessageDialog(panel, "Game Over!\nYour Score: " + score);
+        int option = JOptionPane.showConfirmDialog(this,
+                "Game Over!\nYour Score:" + score + "\nDo you want to go to the main menu??",
+                "Game Over!",
+                JOptionPane.YES_NO_OPTION);
         JFrame gameFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
         gameFrame.dispose();
-        new Main();
+        if (option == JOptionPane.YES_OPTION) {
+            new Main();
+        }
     }
 }
