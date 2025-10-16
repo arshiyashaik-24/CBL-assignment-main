@@ -11,7 +11,8 @@ public class Main extends JPanel {
     private JLabel laneLabel;
     private Image backgroundImage;
 
-    private int frameHeight = 960;
+    private int buttonY;
+    private int selectorY;
 
     public static void main(String[] args) {
         new Main();
@@ -38,22 +39,29 @@ public class Main extends JPanel {
     }
 
     public Main() {
+        setPreferredSize(new Dimension(600, 960));
+
         // Frame setup
         frame = new JFrame("Keys of Survival");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(600, frameHeight);
-        frame.setLocationRelativeTo(null);
+        frame.add(this);
         frame.setResizable(false);
-
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+        
         // Load your title screen background image
         backgroundImage = new ImageIcon("Images/MenuBackground.png").getImage();
         setLayout(null);
+        
+        buttonY = (frame.getContentPane().getSize().height * 13) / 20;
+        selectorY = (frame.getContentPane().getSize().height * 17) / 20;
 
         // START button — transparent + over player's hands area
         startButton = new JButton("     ");
         startButton.setFont(new Font("Press Start 2P", Font.BOLD, 30)); // use a pixel font if available
         startButton.setForeground(Color.WHITE);
-        startButton.setBounds(190, frameHeight - 360, 220, 80); // position to match hands area
+        startButton.setBounds(190, buttonY, 220, 80); // position to match hands area
 
         // Transparency 
         startButton.setContentAreaFilled(false);
@@ -61,31 +69,28 @@ public class Main extends JPanel {
         startButton.setBorderPainted(false);
         startButton.setFocusPainted(false);
         startButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
+        
         add(startButton);
-
+        
         // LANE SELECTOR SECTION
         laneLabel = new JLabel("LANES");
         laneLabel.setFont(new Font("Minecraftia", Font.BOLD, 20)); // pixel-style font
         laneLabel.setForeground(new Color(230, 230, 210)); // bone-white to match selector text
-        laneLabel.setBounds(210, frameHeight - 200, 150, 30);
+        laneLabel.setBounds(210, selectorY, 150, 30);
         add(laneLabel);
-
+        
         laneSelector = new JComboBox<>(new Integer[]{3, 4, 5});
         laneSelector.setBorder(BorderFactory.createLineBorder(new Color(230, 230, 210), 2)); // bone-white border
         laneSelector.setFont(new Font("Press Start 2P", Font.PLAIN, 18)); // pixel-style font
         laneSelector.setForeground(new Color(230, 230, 210));
         laneSelector.setBackground(new Color(50, 30, 20));
         laneSelector.setFocusable(false);
-        laneSelector.setBounds(300, frameHeight - 200, 80, 35);
+        laneSelector.setBounds(300, selectorY, 80, 35);
         add(laneSelector);
-
+        
         // Button action
         startButton.addActionListener(e -> startGame());
-
-        frame.add(this);
-        frame.setVisible(true);
-
+        
         // Start animations
         startFadeIn();
         startGlowAnimation();
@@ -105,13 +110,13 @@ public class Main extends JPanel {
 
         // rusty plate behind lane selector
         g2.setColor(new Color(50, 30, 20, 200)); 
-        g2.fillRoundRect(175, frameHeight - 220, 235, 70, 20, 20);
+        g2.fillRoundRect(175, selectorY - 20, 235, 70, 20, 20);
 
         // Pulsing glow around start button
         int glowAlpha = (int) (100 + 80 * Math.sin(glowPhase));
         g2.setColor(new Color(255, 180, 150, glowAlpha));
         g2.setStroke(new BasicStroke(5f));
-        g2.drawRoundRect(175, frameHeight - 220, 235, 70, 20, 20);
+        g2.drawRoundRect(175, selectorY - 20, 235, 70, 20, 20);
 
         g2.setComposite(original);
         g2.dispose();
