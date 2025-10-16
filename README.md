@@ -1,7 +1,8 @@
-# 🧟‍♂️ Keys of Survival  
-**CBL Assignment – Programming (2IP90), TU/e**  
-*By Arshiya Shaik & Priyanshu Guha*  
-
+<p align="center">
+  <b>Keys of Survival</b><br>
+  <i>By Arshiya Shaik & Priyanshu Guha</i><br>
+  <small>CBL Assignment – Programming (2IP90), TU/e</small>
+</p>
 ---
 
 ## 🎮 Overview  
