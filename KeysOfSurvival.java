@@ -8,7 +8,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     JPanel panel = this; // Reference to the game panel
     Random random = new Random(); // Used for randomly generating obstacles.
 
-    final int NUMBER_OF_LANES;
+    public static int NUMBER_OF_LANES;
     // These are the number of lanes that are taken into account for the game.
     
     static final int FRAME_WIDTH = 600;
