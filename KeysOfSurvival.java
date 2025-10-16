@@ -3,6 +3,10 @@ import java.awt.event.*; // For ActionListener, KeyListener
 import java.io.File;     // For File
 import java.util.*;      // For Random, ArrayList
 import javax.swing.*;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+
 
 public class KeysOfSurvival extends JPanel implements ActionListener, KeyListener {
     JPanel panel = this; // Reference to the game panel
@@ -100,6 +104,17 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
             doorImages2[i] = new ImageIcon("Images/Doors/" + COLOR_NAMES[i] + "2.png").getImage();
             keyImages[i] = new ImageIcon("Images/Keys/" + COLOR_NAMES[i] + ".png").getImage();
             keyIcons[i] = new ImageIcon("Images/Icons/Keys/" + COLOR_NAMES[i] + ".png").getImage();
+        }
+    }
+
+    private void playSound(String soundFile) {
+    try {
+        AudioInputStream audioInput = AudioSystem.getAudioInputStream(getClass().getResource(soundFile));
+        Clip clip = AudioSystem.getClip();
+        clip.open(audioInput);
+        clip.start();
+    } catch (Exception e) {
+        e.printStackTrace();
         }
     }
 
@@ -293,9 +308,11 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
             if (y > PLAYER_Y && !passed) {
                 if (currentLane == lane) {
                     if (currentKeys[color] == 0) {
+                        playSound("/Sounds/HitObstacle.wav");
                         gameOver();
                     } else {
                         opened = true;
+                        playSound("/Sounds/DoorOpens.wav");
                         currentKeys[color]--;
                         score++;
                         doorsOpened++;
@@ -323,6 +340,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
                 if (currentLane == lane) {
                     currentKeys[color]++;
                     obtained = true;
+                    playSound("/Sounds/KeyCollected.wav");
                 }
                 passed = true;
             }
@@ -339,13 +357,14 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
             if (y > PLAYER_Y && !passed) {
                 if (currentLane == lane) {
                     gameOver();
+                    playSound("/Sounds/HitObstacle.wav");
                 }
                 passed = true;
             }
         }
     }
 
-    void gameOver() {
+        void gameOver() {
         if (health >= 3) {
             int option = JOptionPane.showConfirmDialog(this,
                 "You hit an obstacle.\nDo you want to use three hearts to continue?",
