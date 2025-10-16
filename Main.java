@@ -4,7 +4,7 @@ import javax.swing.*;
 
 public class Main extends JPanel {
     private float fadeOpacity = 0f;
-    private float glowPhase = 0f; // for pulsing glow
+    private float glowPhase = 0f; 
     private JFrame frame;
     private JButton startButton;
     private JComboBox<Integer> laneSelector;
@@ -110,7 +110,7 @@ public class Main extends JPanel {
         g2.setStroke(new BasicStroke(3)); 
         g2.drawRoundRect(175, 620, 235, 70, 20, 20);
 
-        // optional: tiny rusty highlight for extra texture
+        //  tiny rusty highlight for extra texture
         g2.setColor(new Color(255, 120, 80, 100)); 
         g2.setStroke(new BasicStroke(2));
         g2.drawRoundRect(178, 623, 229, 64, 20, 20);
@@ -119,7 +119,7 @@ public class Main extends JPanel {
         int glowAlpha = (int) (100 + 80 * Math.sin(glowPhase));
         g2.setColor(new Color(255, 180, 150, glowAlpha));
         g2.setStroke(new BasicStroke(5f));
-        g2.drawRoundRect(185, 500, 210, 80, 25, 25);
+        g2.drawRoundRect(175, 620, 235, 70, 20, 20);
 
         g2.setComposite(original);
         g2.dispose();
