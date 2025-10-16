@@ -30,7 +30,7 @@ public class Countdowns {
      * 
      * The following list shows what happens in KeysOfSurvival when a number is returned.
      * 
-     *  1 - Door spawns, 2 - Key spawns, 3 - Zombie spawns, 4 - Speed up 
+     *  1 - Door spawns, 2 - Key spawns, 4 - Zombie spawns, 8 - Speed up 
      * 
      * @param speed is the speed in KeysOfSurvival, used to appropriately decrease the countdowns.
      * @return a byte if a countdown has reached 0.
@@ -54,13 +54,13 @@ public class Countdowns {
 
             // Determine randomly when next zombie spawns
             zombieCountdownRestart = 300 + 300 * random.nextInt(8);
-            return 3;
+            return 4;
         }
 
         speedUpCountdown -= 1;
         if (!(speed >= 50) && speedUpCountdown < 1) {
             speedUpCountdown += speedUpCountdownRestart;
-            return 4;
+            return 8;
         }
 
         return 0;
