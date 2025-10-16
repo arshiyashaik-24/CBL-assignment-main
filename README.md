@@ -27,14 +27,14 @@ Random generation was implemented to ensure **each playthrough feels unique** an
 - Keys, doors, and zombies are all placed procedurally within three lanes using randomized logic.  
 - Placement algorithms guarantee **fair and solvable runs**, avoiding impossible scenarios (e.g., blocked paths or missing key-door pairs).  
 - This demonstrates understanding of **advanced programming concepts** such as **state checking**, **object mapping**, and **algorithmic fairness**.  
-- From a player’s perspective, it ensures lasting engagement — no two runs are ever the same.  
+- From a player’s perspective, it ensures lasting engagement, no two runs are ever the same.  
 
 ### **2. User Experience (UX Design Principles)**  
 A major design focus was on **clarity, responsiveness, and feedback**.  
 - The **HUD** provides immediate visual feedback on keys, health, and score, ensuring players always understand their status.  
 - **Color-coded doors and keys** enhance recognition and reduce cognitive load during fast gameplay.  
 - **Player and door animations** and **background design** reinforce immersion without cluttering the screen.  
-- Overall, UX principles guide the game’s structure — players must feel in control, informed, and motivated.  
+- Overall, UX principles guide the game’s structure, players must feel in control, informed, and motivated.  
 
 ---
 
