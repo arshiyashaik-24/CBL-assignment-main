@@ -1,5 +1,4 @@
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
 
 public class Main extends JPanel {
@@ -127,8 +126,10 @@ public class Main extends JPanel {
 
     private void startGame() {
         int chosenLanes = (int) laneSelector.getSelectedItem();
+        frame.dispose(); // close the menu window
+
+        // make NUMBER_OF_LANES adjustable in the game
         KeysOfSurvival.NUMBER_OF_LANES = chosenLanes;
-        frame.dispose(); // close menu
         new KeysOfSurvival();
     }
 }
