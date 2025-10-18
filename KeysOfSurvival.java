@@ -108,7 +108,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         g.setFont(new Font(g.getFont().getFontName(), Font.PLAIN, 20)); // Increase font size
 
         // Draw background
-        // Background needs to be drawn twice to give an "endless background" illusion .
+        // Background needs to be drawn twice to give an "endless background" illusion.
         g.drawImage(backgroundImage, 0, backgroundPosition, FRAME_WIDTH, FRAME_HEIGHT, this);
         g.drawImage(backgroundImage,
             0, backgroundPosition - FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT, this);
