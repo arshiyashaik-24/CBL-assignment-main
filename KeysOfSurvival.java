@@ -3,6 +3,10 @@ import java.awt.event.*; // For ActionListener, KeyListener
 import java.io.File;     // For File
 import java.util.*;      // For Random, ArrayList
 import javax.swing.*;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+
 
 public class KeysOfSurvival extends JPanel implements ActionListener, KeyListener {
     JPanel panel = this; // Reference to the game panel
@@ -71,6 +75,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         JFrame frame = new JFrame("Keys of Survival");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Needed to end program
         frame.add(this); // Connects the JPanel and JFrame
+        frame.setResizable(false);
         frame.pack(); // Sets the size of the frame
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
@@ -102,13 +107,24 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         }
     }
 
+    private void playSound(String soundFile) {
+    try {
+        AudioInputStream audioInput = AudioSystem.getAudioInputStream(getClass().getResource(soundFile));
+        Clip clip = AudioSystem.getClip();
+        clip.open(audioInput);
+        clip.start();
+    } catch (Exception e) {
+        e.printStackTrace();
+        }
+    }
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g); // Initial painting
         g.setFont(new Font(g.getFont().getFontName(), Font.PLAIN, 20)); // Increase font size
 
         // Draw background
-        // Background needs to be drawn twice to give an "endless background" illusion.
+        // Background needs to be drawn twice to give an "endless background" illusion .
         g.drawImage(backgroundImage, 0, backgroundPosition, FRAME_WIDTH, FRAME_HEIGHT, this);
         g.drawImage(backgroundImage,
             0, backgroundPosition - FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT, this);
@@ -149,7 +165,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         }
 
         if (!playerDrawn) {
-            // Draw player, if it was not drawn yet
+            // Draw player
             g.drawImage(playerImage[playerAnimationFrame],
                 ((FRAME_WIDTH / NUMBER_OF_LANES * (2 * currentLane + 1) - PLAYER_WIDTH)) / 2,
                 PLAYER_Y,
@@ -292,9 +308,11 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
             if (y > PLAYER_Y && !passed) {
                 if (currentLane == lane) {
                     if (currentKeys[color] == 0) {
+                        playSound("/Sounds/HitObstacle.wav");
                         gameOver();
                     } else {
                         opened = true;
+                        playSound("/Sounds/DoorOpens.wav");
                         currentKeys[color]--;
                         score++;
                         doorsOpened++;
@@ -322,6 +340,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
                 if (currentLane == lane) {
                     currentKeys[color]++;
                     obtained = true;
+                    playSound("/Sounds/KeyCollected.wav");
                 }
                 passed = true;
             }
@@ -338,13 +357,14 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
             if (y > PLAYER_Y && !passed) {
                 if (currentLane == lane) {
                     gameOver();
+                    playSound("/Sounds/HitObstacle.wav");
                 }
                 passed = true;
             }
         }
     }
 
-    void gameOver() {
+        void gameOver() {
         if (health >= 3) {
             int option = JOptionPane.showConfirmDialog(this,
                 "You hit an obstacle.\nDo you want to use three hearts to continue?",
@@ -357,7 +377,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         }
         timer.stop();
         int option = JOptionPane.showConfirmDialog(this,
-                "Game Over!\nYour Score:" + score + "\nDo you want to go to the main menu?",
+                "Game Over!\nYour Score:" + score + "\nDo you want to go to the main menu??",
                 "Game Over!",
                 JOptionPane.YES_NO_OPTION);
         JFrame gameFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
