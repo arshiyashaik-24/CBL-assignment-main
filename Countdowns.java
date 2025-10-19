@@ -37,18 +37,20 @@ public class Countdowns {
      */
     public byte countdown(int speed) { // Not a constructor
         doorCountdown -= speed;
+        keyCountdown -= speed;
+        zombieCountdown -= speed;
+        speedUpCountdown -= 1;
+
         if (doorCountdown < 1) {
             doorCountdown += doorCountdownRestart;
             return 1;
         }
         
-        keyCountdown -= speed;
         if (keyCountdown < 1) {
             keyCountdown += keyCountdownRestart;
             return 2;
         }
 
-        zombieCountdown -= speed;
         if (zombieCountdown < 1) {
             zombieCountdown += zombieCountdownRestart;
 
@@ -57,7 +59,6 @@ public class Countdowns {
             return 4;
         }
 
-        speedUpCountdown -= 1;
         if (!(speed >= 50) && speedUpCountdown < 1) {
             speedUpCountdown += speedUpCountdownRestart;
             return 8;

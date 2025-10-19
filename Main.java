@@ -124,7 +124,6 @@ public class Main extends JPanel {
 
     private void startGame() {
         int chosenLanes = (int) laneSelector.getSelectedItem();
-        KeysOfSurvival.NUMBER_OF_LANES = chosenLanes;
         frame.dispose(); // close menu
         new KeysOfSurvival(chosenLanes);
     }
