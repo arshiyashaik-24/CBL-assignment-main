@@ -1,10 +1,9 @@
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
 
 public class Main extends JPanel {
     private float fadeOpacity = 0f;
-    private float glowPhase = 0f; 
+    private float glowPhase = 0f;
     private JFrame frame;
     private JButton startButton;
     private JComboBox<Integer> laneSelector;

@@ -3,14 +3,15 @@ import java.awt.event.*; // For ActionListener, KeyListener
 import java.io.File;     // For File
 import java.util.*;      // For Random, ArrayList
 import javax.swing.*;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
+import javax.sound.sampled.*;
 
 
 public class KeysOfSurvival extends JPanel implements ActionListener, KeyListener {
     JPanel panel = this; // Reference to the game panel
     Random random = new Random(); // Used for randomly generating obstacles.
+
+    static final int OPEN_LIMIT = 10;
+    static int opened = 0;
 
     public static int NUMBER_OF_LANES;
     // These are the number of lanes that are taken into account for the game.
@@ -235,7 +236,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
             spawnDoor();
         }
 
-        playerAnimationCountdown -= 1;
+        playerAnimationCountdown -= speed / 10;
         if (playerAnimationCountdown < 1) {
             playerAnimationCountdown += PLAYER_ANIMATION_DURATION;
             playerAnimationFrame = (playerAnimationFrame + 1) % NUMBER_OF_PLAYER_SPRITES;
@@ -256,6 +257,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         repaint();
     }
 
+    @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_LEFT && currentLane != 0) {
             currentLane--;
@@ -266,11 +268,13 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
             playSound("Sounds/MoveLeftRight.wav");
         }
     }
-
+    
+    @Override
     public void keyReleased(KeyEvent e) {
         // Nothing to do
     }
-
+    
+    @Override
     public void keyTyped(KeyEvent e) {
         // Nothing to do
     }
@@ -359,15 +363,20 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
             super.move();
             if (y > PLAYER_Y && !passed) {
                 if (currentLane == lane) {
-                    gameOver();
                     playSound("/Sounds/HitObstacle.wav");
+                    //gameOver();
+                    timer.stop();
+                    if (opened < OPEN_LIMIT) {
+                        opened++;
+                        new JumpOver(timer, speed);
+                    }
                 }
                 passed = true;
             }
         }
     }
 
-        void gameOver() {
+    void gameOver() {
         if (health >= 3) {
             int option = JOptionPane.showConfirmDialog(this,
                 "You hit an obstacle.\nDo you want to use three hearts to continue?",
