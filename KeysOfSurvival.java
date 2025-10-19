@@ -32,7 +32,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     static final int NUMBER_OF_COLORS = 4;
     // This is the number of different door colors used in the game.
     
-    static int speed = 10; 
+    int speed = 10; 
     // A measure of how fast the game runs. The initial speed is set here.
     
     static int currentLane;
@@ -108,13 +108,14 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     }
 
     private void playSound(String soundFile) {
-    try {
-        AudioInputStream audioInput = AudioSystem.getAudioInputStream(getClass().getResource(soundFile));
-        Clip clip = AudioSystem.getClip();
-        clip.open(audioInput);
-        clip.start();
-    } catch (Exception e) {
-        e.printStackTrace();
+        try {
+            AudioInputStream audioInput = AudioSystem.getAudioInputStream(getClass().getResource(soundFile));
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInput);
+            clip.start();
+        } catch (Exception e) {
+            // e.printStackTrace();
+            System.out.println(soundFile + " couldn't play.");
         }
     }
 
@@ -258,9 +259,11 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_LEFT && currentLane != 0) {
             currentLane--;
+            playSound("Sounds/MoveLeftRight.wav");
         }
         if (e.getKeyCode() == KeyEvent.VK_RIGHT && currentLane != NUMBER_OF_LANES - 1) {
             currentLane++;
+            playSound("Sounds/MoveLeftRight.wav");
         }
     }
 
@@ -384,6 +387,8 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         gameFrame.dispose();
         if (option == JOptionPane.YES_OPTION) {
             new Main();
+        } else {
+            System.exit(0);
         }
     }
 }
