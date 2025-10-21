@@ -7,37 +7,34 @@ import javax.sound.sampled.*;
 
 
 public class KeysOfSurvival extends JPanel implements ActionListener, KeyListener {
-    JPanel panel = this; // Reference to the game panel
+    KeysOfSurvival thisGame = this; // Reference to the game panel
     Random random = new Random(); // Used for randomly generating obstacles.
 
-    static final int OPEN_LIMIT = 10;
-    static int opened = 0;
-
-    public static int NUMBER_OF_LANES;
     // These are the number of lanes that are taken into account for the game.
+    public static int NUMBER_OF_LANES;
     
+    // These are the frame dimensions.
     static final int FRAME_WIDTH = 600;
     static final int FRAME_HEIGHT = 960;
-    // These are the frame dimensions.
     
+    // These are the dimensions of the player character.
     static final int PLAYER_WIDTH = 150;
     static final int PLAYER_HEIGHT = 150;
-    // These are the dimensions of the player character.
     
-    static final int PLAYER_Y = 600;
     // The vertical position in which the player is rendered
+    static final int PLAYER_Y = 600;
     
-    static final int MILLISECONDS_PER_FRAME = 20;
     // This is the length of each interval processed by the game in milliseconds.
+    static final int MILLISECONDS_PER_FRAME = 20;
 
-    static final int NUMBER_OF_COLORS = 4;
     // This is the number of different door colors used in the game.
+    static final int NUMBER_OF_COLORS = 4;
     
-    int speed = 10; 
     // A measure of how fast the game runs. The initial speed is set here.
+    int speed = 10; 
     
-    static int currentLane;
     // The player starts in the middle lane
+    static int currentLane;
 
     Countdowns countdowns = new Countdowns();
     
@@ -316,7 +313,8 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
                 if (currentLane == lane) {
                     if (currentKeys[color] == 0) {
                         playSound("/Sounds/HitObstacle.wav");
-                        gameOver();
+                        timer.stop();
+                        new ConnectWires(thisGame, speed);
                     } else {
                         opened = true;
                         playSound("/Sounds/DoorOpens.wav");
@@ -364,12 +362,8 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
             if (y > PLAYER_Y && !passed) {
                 if (currentLane == lane) {
                     playSound("/Sounds/HitObstacle.wav");
-                    //gameOver();
                     timer.stop();
-                    if (opened < OPEN_LIMIT) {
-                        opened++;
-                        new JumpOver(timer, speed);
-                    }
+                    new JumpOver(thisGame, speed);
                 }
                 passed = true;
             }

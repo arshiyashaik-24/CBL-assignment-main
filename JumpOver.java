@@ -9,6 +9,7 @@ public class JumpOver extends Minigame {
         new ImageIcon("Images/Minigame/Zombie1.png").getImage(),
         new ImageIcon("Images/Minigame/Zombie2.png").getImage(),
         new ImageIcon("Images/Minigame/Zombie3.png").getImage()};
+    
     int zombieFrame = 0;
     int zombieX = MINIGAME_WIDTH; // Zombie starts at the very right.
 
@@ -26,9 +27,9 @@ public class JumpOver extends Minigame {
     static final int GRAVITY = 2;
     boolean jumping = false;
 
-    JumpOver(Timer mainGame, int speed) {
-        super(mainGame, speed, "Jump Over!");
-        ((JFrame) SwingUtilities.getWindowAncestor(this)).addKeyListener(this);
+    JumpOver(KeysOfSurvival mainGame, int speed) {
+        super(mainGame, speed, "⚠️ Jump Over!", 25000 / speed);
+        frame.addKeyListener(this);
     }
 
     @Override
@@ -41,12 +42,24 @@ public class JumpOver extends Minigame {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (zombieX < -2 * ZOMBIE_WIDTH) { // If zombie is completely gone from the frame
-            ResumeGame();
+        super.actionPerformed(e); // Progress bar
+
+        // The following if-statement checks if the player touches the zombie.
+        // Constants are added to shrink the zombie hitbox.
+        if (zombieX <= PLAYER_X + PLAYER_WIDTH - 10
+            && zombieX >= PLAYER_X - ZOMBIE_WIDTH + 20
+            && playerAltitude <= PLAYER_Y - ZOMBIE_Y + PLAYER_HEIGHT - 10) {
+            timer.stop();
+            failGame();
         }
+
         zombieX -= speed;
         zombieFrame++;
         zombieFrame %= 6;
+
+        if (zombieX < -ZOMBIE_WIDTH) {
+            resumeGame();
+        }
 
         if (jumping) {
             playerAltitude += playerVelocity;
