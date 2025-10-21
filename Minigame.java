@@ -50,7 +50,6 @@ public class Minigame extends JPanel implements ActionListener, KeyListener {
         JFrame minigameFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
         minigameFrame.dispose();
         timer.stop(); // Finish this minigame.
-        mainGame.timer.start(); // Start the main game again.
         mainGame.gameOver();
     }
 

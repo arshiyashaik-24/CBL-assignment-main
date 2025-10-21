@@ -378,10 +378,10 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
                 JOptionPane.YES_NO_OPTION);
             if (option == JOptionPane.YES_OPTION) {
                 health -= 3;
+                timer.start();
                 return;
             }
         }
-        timer.stop();
         int option = JOptionPane.showConfirmDialog(this,
                 "Game Over!\nYour Score:" + score + "\nDo you want to go to the main menu??",
                 "Game Over!",
