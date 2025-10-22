@@ -1,273 +1,240 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Random;
 
-public class ZombieTicTacToe extends JFrame {
-
-    private static final int SIZE = 3;
-    private JButton[][] cells = new JButton[SIZE][SIZE];
-    private char[][] board = new char[SIZE][SIZE];
-    private boolean humanTurn = true;
-    private char human = 'X';
-    private char ai = 'O';
-    private boolean gameOver = false;
+public class ZombieTicTacToe extends Minigame implements ActionListener {
+    private JButton[] buttons = new JButton[9];
+    private boolean playerTurn = true;
+    private JLabel statusLabel;
+    private Random random = new Random();
     private int lives = 3;
 
-    private JLabel statusLabel;
-    private JLabel livesLabel;
-    private JComboBox<String> difficultyBox;
-    private JComboBox<String> sideBox;
+    public ZombieTicTacToe(KeysOfSurvival mainGame, int speed) {
+        super(mainGame, speed, "☣ Zombie Tic-Tac-Toe ☣", 20000 / speed); 
+        setLayout(null);
+        setBackground(new Color(15, 18, 15));
 
-    public ZombieTicTacToe() {
-        setTitle("🧟 Zombie Apocalypse Tic Tac Toe");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setResizable(false);
-        setLayout(new BorderLayout(10, 10));
-        getContentPane().setBackground(Color.black);
+        // Title with glow effect
+        JLabel title = new JLabel("☣ Zombie Tic-Tac-Toe ☣", SwingConstants.CENTER);
+        title.setFont(new Font("Stencil", Font.BOLD, 38));
+        title.setForeground(new Color(200, 30, 30));
+        title.setBounds(0, 30, MINIGAME_WIDTH, 50);
+        add(title);
 
-        // === TOP PANEL ===
-        JPanel topPanel = new JPanel(new FlowLayout());
-        topPanel.setBackground(Color.black);
-        topPanel.setForeground(Color.white);
+        // Status label
+        statusLabel = new JLabel("Survivor's Turn (X) — Lives: " + lives, SwingConstants.CENTER);
+        statusLabel.setForeground(new Color(180, 180, 180));
+        statusLabel.setFont(new Font("Consolas", Font.BOLD, 26));
+        statusLabel.setBounds(0, 90, MINIGAME_WIDTH, 40);
+        add(statusLabel);
 
-        statusLabel = new JLabel("Welcome to the ruined city. Claim a cell!");
-        statusLabel.setForeground(Color.green);
+        // Board panel
+        JPanel board = new JPanel(new GridLayout(3, 3, 8, 8));
+        board.setBounds(280, 150, 400, 400);
+        board.setBackground(new Color(20, 25, 20));
+        add(board);
 
-        topPanel.add(statusLabel);
-        add(topPanel, BorderLayout.NORTH);
-
-        // === BOARD PANEL ===
-        JPanel boardPanel = new JPanel(new GridLayout(SIZE, SIZE, 5, 5));
-        boardPanel.setBackground(Color.black);
-
-        Font font = new Font("Arial", Font.BOLD, 72);
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                cells[i][j] = new JButton("");
-                cells[i][j].setFont(font);
-                cells[i][j].setFocusPainted(false);
-                cells[i][j].setBackground(new Color(35, 35, 35));
-                cells[i][j].setForeground(Color.white);
-                final int r = i, c = j;
-                cells[i][j].addActionListener(e -> handleMove(r, c));
-                boardPanel.add(cells[i][j]);
-                board[i][j] = ' ';
-            }
-        }
-
-        add(boardPanel, BorderLayout.CENTER);
-
-        // === BOTTOM PANEL ===
-        JPanel bottomPanel = new JPanel(new FlowLayout());
-        bottomPanel.setBackground(Color.black);
-
-        difficultyBox = new JComboBox<>(new String[]{"Normal", "Hard"});
-        sideBox = new JComboBox<>(new String[]{"Survivor (X)", "Zombie (O)"});
-        JButton restartBtn = new JButton("Restart Game");
-
-        livesLabel = new JLabel("❤️❤️❤️");
-        livesLabel.setForeground(Color.red);
-        livesLabel.setFont(new Font("Arial", Font.BOLD, 20));
-
-        bottomPanel.add(new JLabel("Difficulty:"));
-        bottomPanel.add(difficultyBox);
-        bottomPanel.add(new JLabel("Your side:"));
-        bottomPanel.add(sideBox);
-        bottomPanel.add(livesLabel);
-        bottomPanel.add(restartBtn);
-
-        restartBtn.addActionListener(e -> resetFullGame());
-        add(bottomPanel, BorderLayout.SOUTH);
-
-        // === Initialize window ===
-        setSize(450, 500);
-        setLocationRelativeTo(null);
-        setVisible(true);
-    }
-
-    // === HANDLE PLAYER MOVE ===
-    private void handleMove(int r, int c) {
-        if (gameOver || !humanTurn || board[r][c] != ' ') return;
-
-        board[r][c] = human;
-        cells[r][c].setText(String.valueOf(human));
-        cells[r][c].setForeground(human == 'X' ? Color.cyan : Color.pink);
-        humanTurn = false;
-
-        char winner = checkWinner(board);
-        if (winner != ' ') {
-            endRound(winner);
-            return;
-        } else if (isBoardFull(board)) {
-            endRound('D');
-            return;
-        }
-
-        // Delay AI move for 0.7 sec
-        new javax.swing.Timer(700, e -> {
-            aiMove();
-            humanTurn = true;
-            char w = checkWinner(board);
-            if (w != ' ') endRound(w);
-            else if (isBoardFull(board)) endRound('D');
-            ((javax.swing.Timer) e.getSource()).stop();
-        }).start();
-    }
-
-    // === AI MOVE ===
-    private void aiMove() {
-        if (gameOver) return;
-        int[] move = (difficultyBox.getSelectedItem().equals("Hard")) ?
-                findBestMove(board, ai) : randomMove();
-        board[move[0]][move[1]] = ai;
-        cells[move[0]][move[1]].setText(String.valueOf(ai));
-        cells[move[0]][move[1]].setForeground(ai == 'X' ? Color.cyan : Color.pink);
-    }
-
-    private int[] randomMove() {
-        java.util.List<int[]> empty = new java.util.ArrayList<>();
-        for (int r = 0; r < SIZE; r++)
-            for (int c = 0; c < SIZE; c++)
-                if (board[r][c] == ' ')
-                    empty.add(new int[]{r, c});
-        return empty.get((int) (Math.random() * empty.size()));
-    }
-
-    // === MINIMAX AI ===
-    private int[] findBestMove(char[][] board, char player) {
-        int bestScore = (player == ai) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
-        int[] move = {-1, -1};
-
-        for (int r = 0; r < SIZE; r++) {
-            for (int c = 0; c < SIZE; c++) {
-                if (board[r][c] == ' ') {
-                    board[r][c] = player;
-                    int score = minimax(board, 0, player == human);
-                    board[r][c] = ' ';
-                    if (player == ai) {
-                        if (score > bestScore) {
-                            bestScore = score;
-                            move = new int[]{r, c};
-                        }
-                    } else {
-                        if (score < bestScore) {
-                            bestScore = score;
-                            move = new int[]{r, c};
-                        }
+        // Buttons with rounded corners and flat look
+        for (int i = 0; i < 9; i++) {
+            buttons[i] = new JButton("");
+            buttons[i].setFont(new Font("Arial Black", Font.BOLD, 72));
+            buttons[i].setBackground(new Color(30, 35, 30));
+            buttons[i].setForeground(Color.GREEN);
+            buttons[i].setFocusPainted(false);
+            buttons[i].setBorder(BorderFactory.createLineBorder(new Color(60, 60, 60), 2, true));
+            final int index = i;
+            buttons[i].addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    if (buttons[index].isEnabled() && playerTurn) {
+                        buttons[index].setBackground(new Color(50, 70, 50));
                     }
                 }
-            }
-        }
-        return move;
-    }
 
-    private int minimax(char[][] b, int depth, boolean isHumanTurn) {
-        char winner = checkWinner(b);
-        if (winner == ai) return 10 - depth;
-        if (winner == human) return depth - 10;
-        if (isBoardFull(b)) return 0;
-
-        int best = isHumanTurn ? Integer.MAX_VALUE : Integer.MIN_VALUE;
-
-        for (int r = 0; r < SIZE; r++) {
-            for (int c = 0; c < SIZE; c++) {
-                if (b[r][c] == ' ') {
-                    b[r][c] = isHumanTurn ? human : ai;
-                    int score = minimax(b, depth + 1, !isHumanTurn);
-                    b[r][c] = ' ';
-                    if (isHumanTurn)
-                        best = Math.min(best, score);
-                    else
-                        best = Math.max(best, score);
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    if (buttons[index].isEnabled() && playerTurn) {
+                        buttons[index].setBackground(new Color(30, 35, 30));
+                    }
                 }
-            }
+            });
+            buttons[i].addActionListener(this);
+            board.add(buttons[i]);
         }
-        return best;
     }
 
-    // === ROUND END ===
-    private void endRound(char winner) {
-        gameOver = true;
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (!playerTurn) return;
+        JButton btn = (JButton) e.getSource();
+        if (!btn.getText().equals("")) return;
 
-        if (winner == human) {
-            statusLabel.setText("🎉 You conquered the zombies!");
-            statusLabel.setForeground(Color.cyan);
-        } else if (winner == ai) {
+        // Player move
+        btn.setText("X");
+        btn.setForeground(new Color(0, 255, 0));
+        btn.setFont(new Font("Arial Black", Font.BOLD, 72));
+
+        if (checkWinner()) return;
+
+        playerTurn = false;
+        statusLabel.setText("Zombie's Turn (O) — Lives: " + lives);
+
+        // Delay zombie move
+        Timer timer = new Timer(400, evt -> {
+            if (!isGameOver()) zombieMove();
+            ((Timer) evt.getSource()).stop();
+        });
+        timer.setRepeats(false);
+        timer.start();
+    }
+
+    private void zombieMove() {
+        List<Integer> emptyCells = new ArrayList<>();
+        for (int i = 0; i < 9; i++) if (buttons[i].getText().equals("")) emptyCells.add(i);
+        if (emptyCells.isEmpty()) return;
+
+        int move = findBestMove();
+        buttons[move].setText("O");
+        buttons[move].setForeground(new Color(200, 40, 40));
+        buttons[move].setFont(new Font("Arial Black", Font.BOLD, 72));
+
+        if (!checkWinner()) {
+            playerTurn = true;
+            statusLabel.setText("Survivor's Turn (X) — Lives: " + lives);
+        }
+    }
+
+    private int findBestMove() {
+        // Try to win
+        for (int i = 0; i < 9; i++) {
+            if (buttons[i].getText().equals("")) {
+                buttons[i].setText("O");
+                if (isWinningComboSimulate("O")) {
+                    buttons[i].setText("");
+                    return i;
+                }
+                buttons[i].setText("");
+            }
+        }
+        // Block player
+        for (int i = 0; i < 9; i++) {
+            if (buttons[i].getText().equals("")) {
+                buttons[i].setText("X");
+                if (isWinningComboSimulate("X")) {
+                    buttons[i].setText("");
+                    return i;
+                }
+                buttons[i].setText("");
+            }
+        }
+        // Random
+        List<Integer> empty = new ArrayList<>();
+        for (int i = 0; i < 9; i++) if (buttons[i].getText().equals("")) empty.add(i);
+        return empty.get(random.nextInt(empty.size()));
+    }
+
+    private boolean isWinningComboSimulate(String symbol) {
+        int[][] patterns = {
+                {0,1,2},{3,4,5},{6,7,8},
+                {0,3,6},{1,4,7},{2,5,8},
+                {0,4,8},{2,4,6}
+        };
+        for (int[] p : patterns)
+            if (buttons[p[0]].getText().equals(symbol) &&
+                buttons[p[1]].getText().equals(symbol) &&
+                buttons[p[2]].getText().equals(symbol)) return true;
+        return false;
+    }
+
+    private boolean checkWinner() {
+        if (isWinningCombo("X")) return endRoundDialog("Survivors Win! ⚡", true);
+        if (isWinningCombo("O")) return endRoundDialog("Zombies Win! ☣", false);
+
+        boolean draw = true;
+        for (JButton b : buttons) if (b.getText().equals("")) draw = false;
+        if (draw) return endRoundDialog("It's a Draw! Everyone's Infected ☠", false);
+
+        return false;
+    }
+
+    private boolean isWinningCombo(String symbol) {
+        int[][] patterns = {
+                {0,1,2},{3,4,5},{6,7,8},
+                {0,3,6},{1,4,7},{2,5,8},
+                {0,4,8},{2,4,6}
+        };
+        for (int[] p : patterns)
+            if (buttons[p[0]].getText().equals(symbol) &&
+                buttons[p[1]].getText().equals(symbol) &&
+                buttons[p[2]].getText().equals(symbol)) return true;
+        return false;
+    }
+
+    private int[] getWinningPattern(String symbol) {
+        int[][] patterns = {
+                {0,1,2},{3,4,5},{6,7,8},
+                {0,3,6},{1,4,7},{2,5,8},
+                {0,4,8},{2,4,6}
+        };
+        for (int[] p : patterns)
+            if (buttons[p[0]].getText().equals(symbol) &&
+                buttons[p[1]].getText().equals(symbol) &&
+                buttons[p[2]].getText().equals(symbol)) return p;
+        return new int[0];
+    }
+
+    private boolean endRoundDialog(String message, boolean playerWon) {
+        if (playerWon) highlightWinner(getWinningPattern("X"));
+        else if (!message.contains("Draw")) highlightWinner(getWinningPattern("O"));
+
+        statusLabel.setText(message);
+        endGame(playerWon ? new Color(0, 100, 0) : new Color(100, 0, 0));
+
+        JOptionPane.showMessageDialog(this, message);
+
+        if (!playerWon && !message.contains("Draw")) {
             lives--;
-            updateLives();
             if (lives > 0) {
-                statusLabel.setText("💀 You lost this round... prepare again!");
-                statusLabel.setForeground(Color.red);
-                // reset board for next round
-                new javax.swing.Timer(1500, e -> {
-                    resetBoardOnly();
-                    ((javax.swing.Timer) e.getSource()).stop();
-                }).start();
+                JOptionPane.showMessageDialog(this, "You have " + lives + " lives remaining! Try again!");
+                restartRound();
             } else {
-                statusLabel.setText("☠️ Zombies overran your base. You lose!");
-                statusLabel.setForeground(Color.red);
+                failGame();
             }
         } else {
-            statusLabel.setText("😐 Draw. The city still stands...");
-            statusLabel.setForeground(Color.gray);
-            new javax.swing.Timer(1500, e -> {
-                resetBoardOnly();
-                ((javax.swing.Timer) e.getSource()).stop();
-            }).start();
+            resumeGame();
         }
-    }
-
-    // === RESET JUST THE BOARD ===
-    private void resetBoardOnly() {
-        gameOver = false;
-        for (int r = 0; r < SIZE; r++)
-            for (int c = 0; c < SIZE; c++) {
-                board[r][c] = ' ';
-                cells[r][c].setText("");
-                cells[r][c].setEnabled(true);
-                cells[r][c].setBackground(new Color(35, 35, 35));
-            }
-        statusLabel.setText("Your move...");
-        statusLabel.setForeground(Color.green);
-    }
-
-    // === FULL RESTART (hearts + side) ===
-    private void resetFullGame() {
-        String side = (String) sideBox.getSelectedItem();
-        human = side.startsWith("Survivor") ? 'X' : 'O';
-        ai = (human == 'X') ? 'O' : 'X';
-        lives = 3;
-        updateLives();
-        resetBoardOnly();
-    }
-
-    private void updateLives() {
-        if (lives == 3) livesLabel.setText("❤️❤️❤️");
-        else if (lives == 2) livesLabel.setText("❤️❤️🖤");
-        else if (lives == 1) livesLabel.setText("❤️🖤🖤");
-        else livesLabel.setText("🖤🖤🖤");
-    }
-
-    // === CHECK WINNER ===
-    private char checkWinner(char[][] b) {
-        for (int i = 0; i < SIZE; i++) {
-            if (b[i][0] != ' ' && b[i][0] == b[i][1] && b[i][1] == b[i][2]) return b[i][0];
-            if (b[0][i] != ' ' && b[0][i] == b[1][i] && b[1][i] == b[2][i]) return b[0][i];
-        }
-        if (b[0][0] != ' ' && b[0][0] == b[1][1] && b[1][1] == b[2][2]) return b[0][0];
-        if (b[0][2] != ' ' && b[0][2] == b[1][1] && b[1][1] == b[2][0]) return b[0][2];
-        return ' ';
-    }
-
-    private boolean isBoardFull(char[][] b) {
-        for (int i = 0; i < SIZE; i++)
-            for (int j = 0; j < SIZE; j++)
-                if (b[i][j] == ' ') return false;
         return true;
     }
 
-    // === MAIN ===
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(ZombieTicTacToe::new);
+    private void restartRound() {
+        for (JButton b : buttons) {
+            b.setText("");
+            b.setEnabled(true);
+            b.setBackground(new Color(30, 35, 30));
+        }
+        playerTurn = true;
+        statusLabel.setText("Survivor's Turn (X) — Lives: " + lives);
+    }
+
+    private void highlightWinner(int[] pattern) {
+        for (int i : pattern) buttons[i].setBackground(new Color(120, 20, 20));
+        disableBoard();
+    }
+
+    private void disableBoard() {
+        for (JButton b : buttons) b.setEnabled(false);
+    }
+
+    private void endGame(Color color) {
+        for (JButton b : buttons) b.setBackground(color.darker());
+        disableBoard();
+    }
+
+    private boolean isGameOver() {
+        String text = statusLabel.getText();
+        return text.contains("Win") || text.contains("Draw");
     }
 }
