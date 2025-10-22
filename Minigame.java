@@ -77,7 +77,6 @@ public class Minigame extends JPanel implements ActionListener, KeyListener {
     
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println("------------------------");
         progress();
     }
 }
