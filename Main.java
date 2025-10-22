@@ -2,8 +2,7 @@ import java.awt.*;
 import javax.swing.*;
 
 /**
- * Main menu for Keys of Survival.
- * Displays background, lane selector, start button, and mute button.
+ * Main menu for Keys of Survival with start button, lane selector, and toggleable mute button.
  */
 public class Main extends JPanel {
     private float fadeOpacity = 0f;
@@ -18,30 +17,13 @@ public class Main extends JPanel {
     private int buttonY;
     private int selectorY;
 
+    private final ImageIcon muteIcon;
+    private final ImageIcon unmuteIcon;
+
     public static void main(String[] args) {
         new Main();
     }
 
-    /** Initialize fade-in effect */
-    private void startFadeIn() {
-        Timer fadeTimer = new Timer(25, e -> {
-            fadeOpacity += 0.03f;
-            if (fadeOpacity >= 1f) { fadeOpacity = 1f; ((Timer) e.getSource()).stop(); }
-            repaint();
-        });
-        fadeTimer.start();
-    }
-
-    /** Initialize pulsing glow animation */
-    private void startGlowAnimation() {
-        Timer glowTimer = new Timer(50, e -> {
-            glowPhase += 0.15f;
-            repaint();
-        });
-        glowTimer.start();
-    }
-
-    /** Constructor */
     public Main() {
         setPreferredSize(new Dimension(600, 960));
         frame = new JFrame("Keys of Survival");
@@ -52,14 +34,13 @@ public class Main extends JPanel {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
-        // Load background image
         backgroundImage = new ImageIcon("Images/MenuBackground.png").getImage();
         setLayout(null);
 
         buttonY = (frame.getContentPane().getSize().height * 13) / 20;
         selectorY = (frame.getContentPane().getSize().height * 17) / 20;
 
-        // START button (transparent)
+        // START button
         startButton = new JButton();
         startButton.setBounds(190, buttonY, 220, 80);
         startButton.setContentAreaFilled(false);
@@ -85,10 +66,18 @@ public class Main extends JPanel {
         laneSelector.setBounds(300, selectorY, 80, 35);
         add(laneSelector);
 
-        // MUTE button
-        final ImageIcon muteIcon = new ImageIcon("Images/muteButton_muted.png");
-        muteButton = new JButton(muteIcon);
-        muteButton.setBounds(100, buttonY, muteIcon.getIconWidth(), muteIcon.getIconHeight());
+        // Load and scale mute icons
+        int buttonSize = 50; // size of mute button
+        ImageIcon rawMute = new ImageIcon("Images/muteButton_muted.png");
+        ImageIcon rawUnmute = new ImageIcon("Images/muteButton.png");
+        Image muteImg = rawMute.getImage().getScaledInstance(buttonSize, buttonSize, Image.SCALE_SMOOTH);
+        Image unmuteImg = rawUnmute.getImage().getScaledInstance(buttonSize, buttonSize, Image.SCALE_SMOOTH);
+        muteIcon = new ImageIcon(muteImg);
+        unmuteIcon = new ImageIcon(unmuteImg);
+
+        // Mute button at top-right corner
+        muteButton = new JButton(KeysOfSurvival.isMuted ? muteIcon : unmuteIcon);
+        muteButton.setBounds(getWidth() - buttonSize - 10, 10, buttonSize, buttonSize);
         muteButton.setContentAreaFilled(false);
         muteButton.setOpaque(false);
         muteButton.setBorderPainted(false);
@@ -99,6 +88,7 @@ public class Main extends JPanel {
         // Toggle mute on click
         muteButton.addActionListener(e -> {
             KeysOfSurvival.isMuted = !KeysOfSurvival.isMuted;
+            muteButton.setIcon(KeysOfSurvival.isMuted ? muteIcon : unmuteIcon);
         });
 
         // Start game button
@@ -109,7 +99,23 @@ public class Main extends JPanel {
         startGlowAnimation();
     }
 
-    /** Paint background and glowing plate behind lane selector */
+    private void startFadeIn() {
+        Timer fadeTimer = new Timer(25, e -> {
+            fadeOpacity += 0.03f;
+            if (fadeOpacity >= 1f) { fadeOpacity = 1f; ((Timer) e.getSource()).stop(); }
+            repaint();
+        });
+        fadeTimer.start();
+    }
+
+    private void startGlowAnimation() {
+        Timer glowTimer = new Timer(50, e -> {
+            glowPhase += 0.15f;
+            repaint();
+        });
+        glowTimer.start();
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -124,7 +130,7 @@ public class Main extends JPanel {
         g2.setColor(new Color(50, 30, 20, 200));
         g2.fillRoundRect(175, selectorY - 20, 235, 70, 20, 20);
 
-        // Pulsing glow
+        // Pulsing glow around start button
         int glowAlpha = (int) (100 + 80 * Math.sin(glowPhase));
         g2.setColor(new Color(255, 180, 150, glowAlpha));
         g2.setStroke(new BasicStroke(5f));
@@ -134,7 +140,6 @@ public class Main extends JPanel {
         g2.dispose();
     }
 
-    /** Start the game using selected lane count */
     private void startGame() {
         int chosenLanes = (int) laneSelector.getSelectedItem();
         frame.dispose();

@@ -16,7 +16,7 @@ public class ZombieFruitSequenceMini extends Minigame {
     private int currentStep = 0;
     private int lives = 3;
     private int fruitsCollected = 0;
-    private final int winTarget = 10;
+    private final int winTarget = 5;
     private Random random = new Random();
     private JLabel statusLabel;
     private boolean acceptingInput = false;
