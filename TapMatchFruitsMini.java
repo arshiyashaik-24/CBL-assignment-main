@@ -1,24 +1,24 @@
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import javax.swing.*;
 
 public class TapMatchFruitsMini extends Minigame {
     private JButton[][] gridButtons = new JButton[3][3];
     private String[] fruits = {"🍼", "🥛", "🧃", "🫗"};
     private Color[] baseColors = {new Color(60, 20, 20), new Color(90, 60, 20),
-            new Color(30, 30, 60), new Color(60, 20, 60)};
+        new Color(30, 30, 60), new Color(60, 20, 60)};
     private List<JButton> selected = new ArrayList<>();
     private int score = 0;
     private int lives = 3;
-    private final int WIN_TARGET = 5; // Target score
+    private final int winTarget = 5; // Target score
     private JLabel statusLabel;
     private Random random = new Random();
 
     public TapMatchFruitsMini(KeysOfSurvival mainGame, int speed) {
         super(mainGame, speed, "☣ Tap Match Fluids ☣", 30000 / speed);
+        timer.stop();
         setLayout(null);
         setBackground(new Color(15, 18, 15));
 
@@ -50,8 +50,6 @@ public class TapMatchFruitsMini extends Minigame {
                 btn.setOpaque(true);
                 btn.setContentAreaFilled(true);
                 btn.setFocusPainted(false);
-                final int indexI = i;
-                final int indexJ = j;
                 btn.addActionListener(e -> selectTile(btn));
                 gridButtons[i][j] = btn;
                 board.add(btn);
@@ -64,7 +62,9 @@ public class TapMatchFruitsMini extends Minigame {
     }
 
     private void selectTile(JButton btn) {
-        if (selected.contains(btn)) return;
+        if (selected.contains(btn)) {
+            return;
+        }
 
         btn.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
         selected.add(btn);
@@ -91,8 +91,9 @@ public class TapMatchFruitsMini extends Minigame {
                 b.setBorder(null);
                 b.setBackground(baseColors[random.nextInt(baseColors.length)]);
             }
-            if (score >= WIN_TARGET) {
-                JOptionPane.showMessageDialog(this, "🎉 Mission Complete! Collected enough fluids! ☣");
+            if (score >= winTarget) {
+                JOptionPane.showMessageDialog(this,
+                    "🎉 Mission Complete! Collected enough fluids! ☣");
                 resumeGame();
                 return;
             }
@@ -102,7 +103,8 @@ public class TapMatchFruitsMini extends Minigame {
                 b.setBorder(null);
             }
             if (lives <= 0) {
-                JOptionPane.showMessageDialog(this, "No lives left! Zombies drank all the fluids! ☣");
+                JOptionPane.showMessageDialog(this,
+                    "No lives left! Zombies drank all the fluids! ☣");
                 failGame();
                 return;
             }

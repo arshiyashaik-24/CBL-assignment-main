@@ -1,29 +1,29 @@
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import javax.swing.*;
 
 public class ZombieFruitSequenceMini extends Minigame {
     private JButton[] buttons = new JButton[4]; // 2x2 grid
     private String[] fruits = {"🍎", "🍌", "🍇", "🍒"}; // Emoji fruits
     private Color[] baseColors = {new Color(60, 20, 20), new Color(90, 60, 20),
-            new Color(30, 30, 60), new Color(60, 20, 60)};
+        new Color(30, 30, 60), new Color(60, 20, 60)};
     private Color[] highlightColors = {new Color(255, 100, 100), new Color(255, 220, 100),
-            new Color(150, 150, 255), new Color(255, 100, 255)};
+        new Color(150, 150, 255), new Color(255, 100, 255)};
 
     private List<Integer> sequence = new ArrayList<>();
     private int currentStep = 0;
     private int lives = 3;
     private int fruitsCollected = 0;
-    private final int WIN_TARGET = 10;
+    private final int winTarget = 10;
     private Random random = new Random();
     private JLabel statusLabel;
     private boolean acceptingInput = false;
 
     public ZombieFruitSequenceMini(KeysOfSurvival mainGame, int speed) {
         super(mainGame, speed, "☣ Zombie Fruit Sequence ☣", 30000 / speed);
+        timer.stop();
         setLayout(null);
         setBackground(new Color(15, 18, 15));
 
@@ -35,7 +35,8 @@ public class ZombieFruitSequenceMini extends Minigame {
         add(title);
 
         // Status
-        statusLabel = new JLabel("Lives: " + lives + " | Fruits collected: " + fruitsCollected, SwingConstants.CENTER);
+        statusLabel = new JLabel("Lives: " + lives + " | Fruits collected: " + fruitsCollected,
+            SwingConstants.CENTER);
         statusLabel.setForeground(Color.LIGHT_GRAY);
         statusLabel.setFont(new Font("Consolas", Font.BOLD, 26));
         statusLabel.setBounds(0, 90, MINIGAME_WIDTH, 40);
@@ -91,14 +92,17 @@ public class ZombieFruitSequenceMini extends Minigame {
     }
 
     private void handlePlayerInput(int index) {
-        if (!acceptingInput) return;
+        if (!acceptingInput) {
+            return;
+        }
 
         if (sequence.get(currentStep) == index) {
             currentStep++;
             if (currentStep == sequence.size()) {
                 fruitsCollected++;
-                if (fruitsCollected >= WIN_TARGET) {
-                    JOptionPane.showMessageDialog(this, "🎉 Mission Complete! You collected all fruits safely! ☣");
+                if (fruitsCollected >= winTarget) {
+                    JOptionPane.showMessageDialog(this,
+                        "🎉 Mission Complete! You collected all fruits safely! ☣");
                     resumeGame(); // Inform main game that minigame succeeded
                 } else {
                     Timer t = new Timer(500, e -> startNewRound());

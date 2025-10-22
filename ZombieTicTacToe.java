@@ -1,9 +1,9 @@
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import javax.swing.*;
 
 public class ZombieTicTacToe extends Minigame implements ActionListener {
     private JButton[] buttons = new JButton[9];
@@ -68,23 +68,31 @@ public class ZombieTicTacToe extends Minigame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (!playerTurn) return;
+        if (!playerTurn) {
+            return;
+        }
         JButton btn = (JButton) e.getSource();
-        if (!btn.getText().equals("")) return;
+        if (!btn.getText().equals("")) {
+            return;
+        }
 
         // Player move
         btn.setText("X");
         btn.setForeground(new Color(0, 255, 0));
         btn.setFont(new Font("Arial Black", Font.BOLD, 72));
 
-        if (checkWinner()) return;
+        if (checkWinner()) {
+            return;
+        }
 
         playerTurn = false;
         statusLabel.setText("Zombie's Turn (O) — Lives: " + lives);
 
         // Delay zombie move
         Timer timer = new Timer(400, evt -> {
-            if (!isGameOver()) zombieMove();
+            if (!isGameOver()) {
+                zombieMove();
+            }
             ((Timer) evt.getSource()).stop();
         });
         timer.setRepeats(false);
@@ -93,8 +101,14 @@ public class ZombieTicTacToe extends Minigame implements ActionListener {
 
     private void zombieMove() {
         List<Integer> emptyCells = new ArrayList<>();
-        for (int i = 0; i < 9; i++) if (buttons[i].getText().equals("")) emptyCells.add(i);
-        if (emptyCells.isEmpty()) return;
+        for (int i = 0; i < 9; i++) {
+            if (buttons[i].getText().equals("")) {
+                emptyCells.add(i);
+            }
+        }
+        if (emptyCells.isEmpty()) {
+            return;
+        }
 
         int move = findBestMove();
         buttons[move].setText("O");
@@ -112,7 +126,7 @@ public class ZombieTicTacToe extends Minigame implements ActionListener {
         for (int i = 0; i < 9; i++) {
             if (buttons[i].getText().equals("")) {
                 buttons[i].setText("O");
-                if (isWinningComboSimulate("O")) {
+                if (isWinningCombo("O")) {
                     buttons[i].setText("");
                     return i;
                 }
@@ -123,7 +137,7 @@ public class ZombieTicTacToe extends Minigame implements ActionListener {
         for (int i = 0; i < 9; i++) {
             if (buttons[i].getText().equals("")) {
                 buttons[i].setText("X");
-                if (isWinningComboSimulate("X")) {
+                if (isWinningCombo("X")) {
                     buttons[i].setText("");
                     return i;
                 }
@@ -132,63 +146,74 @@ public class ZombieTicTacToe extends Minigame implements ActionListener {
         }
         // Random
         List<Integer> empty = new ArrayList<>();
-        for (int i = 0; i < 9; i++) if (buttons[i].getText().equals("")) empty.add(i);
+        for (int i = 0; i < 9; i++) {
+            if (buttons[i].getText().equals("")) {
+                empty.add(i);
+            }
+        }
         return empty.get(random.nextInt(empty.size()));
     }
 
-    private boolean isWinningComboSimulate(String symbol) {
-        int[][] patterns = {
-                {0,1,2},{3,4,5},{6,7,8},
-                {0,3,6},{1,4,7},{2,5,8},
-                {0,4,8},{2,4,6}
-        };
-        for (int[] p : patterns)
-            if (buttons[p[0]].getText().equals(symbol) &&
-                buttons[p[1]].getText().equals(symbol) &&
-                buttons[p[2]].getText().equals(symbol)) return true;
-        return false;
-    }
-
     private boolean checkWinner() {
-        if (isWinningCombo("X")) return endRoundDialog("Survivors Win! ⚡", true);
-        if (isWinningCombo("O")) return endRoundDialog("Zombies Win! ☣", false);
+        if (isWinningCombo("X")) {
+            return endRoundDialog("Survivors Win! ⚡", true);
+        }
+        if (isWinningCombo("O")) {
+            return endRoundDialog("Zombies Win! ☣", false);
+        }
 
         boolean draw = true;
-        for (JButton b : buttons) if (b.getText().equals("")) draw = false;
-        if (draw) return endRoundDialog("It's a Draw! Everyone's Infected ☠", false);
+        for (JButton b : buttons) {
+            if (b.getText().equals("")) {
+                draw = false;
+            }
+        }
+        if (draw) {
+            return endRoundDialog("It's a Draw! Everyone's Infected ☠", false);
+        }
 
         return false;
     }
 
     private boolean isWinningCombo(String symbol) {
         int[][] patterns = {
-                {0,1,2},{3,4,5},{6,7,8},
-                {0,3,6},{1,4,7},{2,5,8},
-                {0,4,8},{2,4,6}
+                {0, 1, 2}, {3, 4, 5}, {6, 7, 8},
+                {0, 3, 6}, {1, 4, 7}, {2, 5, 8},
+                {0, 4, 8}, {2, 4, 6}
         };
-        for (int[] p : patterns)
-            if (buttons[p[0]].getText().equals(symbol) &&
-                buttons[p[1]].getText().equals(symbol) &&
-                buttons[p[2]].getText().equals(symbol)) return true;
+        for (int[] p : patterns) {
+            if (buttons[p[0]].getText().equals(symbol)
+                && buttons[p[1]].getText().equals(symbol)
+                && buttons[p[2]].getText().equals(symbol)) {
+                return true;
+            }
+        }
         return false;
     }
 
     private int[] getWinningPattern(String symbol) {
         int[][] patterns = {
-                {0,1,2},{3,4,5},{6,7,8},
-                {0,3,6},{1,4,7},{2,5,8},
-                {0,4,8},{2,4,6}
+                {0, 1, 2}, {3, 4, 5}, {6, 7, 8},
+                {0, 3, 6}, {1, 4, 7}, {2, 5, 8},
+                {0, 4, 8}, {2, 4, 6}
         };
-        for (int[] p : patterns)
-            if (buttons[p[0]].getText().equals(symbol) &&
-                buttons[p[1]].getText().equals(symbol) &&
-                buttons[p[2]].getText().equals(symbol)) return p;
+        for (int[] p : patterns) {
+            if (buttons[p[0]].getText().equals(symbol)
+                && buttons[p[1]].getText().equals(symbol)
+                && buttons[p[2]].getText().equals(symbol)) {
+                return p;
+            }
+        }
         return new int[0];
     }
 
     private boolean endRoundDialog(String message, boolean playerWon) {
-        if (playerWon) highlightWinner(getWinningPattern("X"));
-        else if (!message.contains("Draw")) highlightWinner(getWinningPattern("O"));
+        if (playerWon) {
+            highlightWinner(getWinningPattern("X"));
+        }
+        else if (!message.contains("Draw")) {
+            highlightWinner(getWinningPattern("O"));
+        }
 
         statusLabel.setText(message);
         endGame(playerWon ? new Color(0, 100, 0) : new Color(100, 0, 0));
@@ -198,7 +223,8 @@ public class ZombieTicTacToe extends Minigame implements ActionListener {
         if (!playerWon && !message.contains("Draw")) {
             lives--;
             if (lives > 0) {
-                JOptionPane.showMessageDialog(this, "You have " + lives + " lives remaining! Try again!");
+                JOptionPane.showMessageDialog(this,
+                    "You have " + lives + " lives remaining! Try again!");
                 restartRound();
             } else {
                 failGame();
@@ -220,16 +246,22 @@ public class ZombieTicTacToe extends Minigame implements ActionListener {
     }
 
     private void highlightWinner(int[] pattern) {
-        for (int i : pattern) buttons[i].setBackground(new Color(120, 20, 20));
+        for (int i : pattern) {
+            buttons[i].setBackground(new Color(120, 20, 20));
+        }
         disableBoard();
     }
 
     private void disableBoard() {
-        for (JButton b : buttons) b.setEnabled(false);
+        for (JButton b : buttons) {
+            b.setEnabled(false);
+        }
     }
 
     private void endGame(Color color) {
-        for (JButton b : buttons) b.setBackground(color.darker());
+        for (JButton b : buttons) {
+            b.setBackground(color.darker());
+        }
         disableBoard();
     }
 
