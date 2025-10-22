@@ -12,17 +12,20 @@ public class Countdowns {
     final int keyCountdownStart = 300; // 0.6 seconds at speed 10
     final int zombieCountdownStart = 450 + 300 * random.nextInt(8); // 0.8 - 5.6 seconds at speed 10
     final int doorCountdownStart = 600; // 1.2 seconds at speed 10
-    final int speedUpCountdownStart = 600; // 1.2 seconds at speed 10
+    final int speedUpCountdownStart = 600; // 12 seconds
+    final int newColorCountdownStart = 600; // 12 seconds
     
     int keyCountdownRestart = 600;
     int zombieCountdownRestart = 300 + 300 * random.nextInt(8);
     int doorCountdownRestart = 600;
     int speedUpCountdownRestart = 600;
+    int newColorCountdownRestart = 600;
     
     int keyCountdown = keyCountdownStart;
     int zombieCountdown = zombieCountdownStart;
     int doorCountdown = doorCountdownStart;
     int speedUpCountdown = doorCountdownStart;
+    int newColorCountdown = newColorCountdownStart;
 
     /**
      * This function decreases the countdown for each obstacle type.
@@ -40,6 +43,7 @@ public class Countdowns {
         keyCountdown -= speed;
         zombieCountdown -= speed;
         speedUpCountdown -= 1;
+        newColorCountdown -= 1;
 
         if (doorCountdown < 1) {
             doorCountdown += doorCountdownRestart;
@@ -59,9 +63,14 @@ public class Countdowns {
             return 4;
         }
 
-        if (!(speed >= 50) && speedUpCountdown < 1) {
+        if (speedUpCountdown < 1) {
             speedUpCountdown += speedUpCountdownRestart;
             return 8;
+        }
+
+        if (newColorCountdown < 1) {
+            newColorCountdown += speedUpCountdownRestart;
+            return 16;
         }
 
         return 0;

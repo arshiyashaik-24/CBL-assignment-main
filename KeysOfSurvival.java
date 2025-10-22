@@ -28,7 +28,9 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     static final int MILLISECONDS_PER_FRAME = 20;
 
     // This is the number of different door colors used in the game.
-    static final int NUMBER_OF_COLORS = 4;
+    static final int NUMBER_OF_COLORS = 8;
+
+    int currentNumberOfColors = 4;
     
     // A measure of how fast the game runs. The initial speed is set here.
     int speed = 10; 
@@ -55,8 +57,8 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     Image[] keyImages = new Image[NUMBER_OF_COLORS];
     Image[] keyIcons = new Image[NUMBER_OF_COLORS];
 
-    static final String[] COLOR_NAMES = {"Red", "Green", "Blue", "Yellow"}; // Names of colors used
-    static final Color[] COLORS = {Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW}; // Colors used
+    static final String[] COLOR_NAMES = {"Red", "Green", "Blue", "Yellow", "Brown", "Orange", "White", "Icy"}; // Names of colors used
+    static final Color[] COLORS = {Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW, new Color(102, 51, 0), Color.ORANGE, Color.WHITE, new Color(51, 204, 255)}; // Colors used
     
     ArrayDeque<Obstacle> obstacles = new ArrayDeque<Obstacle>();
     int[] currentKeys = new int[NUMBER_OF_COLORS]; // Number of keys of each color
@@ -191,10 +193,10 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         // Show keys
         for (int i = 0; i < NUMBER_OF_COLORS; i++) {
             if (currentKeys[i] > 0) {
-                g.drawImage(keyIcons[i], FRAME_WIDTH - 210 + 50 * i, 10, 40, 20, this);
+                g.drawImage(keyIcons[i], FRAME_WIDTH - 210 + 50 * (i % 4), 10 + 50 * (i / 4), 40, 20, this);
                 if (currentKeys[i] > 1) {
                     g.setColor(COLORS[i]);
-                    g.drawString("" + currentKeys[i], FRAME_WIDTH - 205 + 50 * i, 50);
+                    g.drawString("" + currentKeys[i], FRAME_WIDTH - 205 + 50 * (i % 4), 50 + 50 * (i / 4));
                 }
             }
         }
@@ -216,9 +218,17 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     public void actionPerformed(ActionEvent e) {
         byte countdownAction = countdowns.countdown(speed);
 
+        if (countdownAction >= 16) {
+            countdownAction -= 16;
+            if (!(currentNumberOfColors >= 8)) {
+                currentNumberOfColors ++;
+            }
+        }
         if (countdownAction >= 8) {
             countdownAction -= 8;
-            speed += 5;
+            if (!(speed >= 50)) {
+                speed += 5;
+            } 
         }
         if (countdownAction >= 4) {
             countdownAction -= 4;
@@ -304,7 +314,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
 
         Door(int lane, int y) {
             super(lane, y);
-            color = random.nextInt(NUMBER_OF_COLORS);
+            color = random.nextInt(currentNumberOfColors);
         }
 
         void move() {
@@ -345,7 +355,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
 
         Key(int lane, int y) {
             super(lane, y);
-            color = random.nextInt(NUMBER_OF_COLORS);
+            color = random.nextInt(currentNumberOfColors);
         }
 
         void move() {
