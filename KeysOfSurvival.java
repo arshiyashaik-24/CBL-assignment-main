@@ -69,6 +69,8 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     
     javax.swing.Timer timer;
 
+    JLabel pauseMessage;
+
     KeysOfSurvival(int numberOfLanes) {
         setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
 
@@ -87,6 +89,11 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         loadImages(numberOfLanes);
         timer = new javax.swing.Timer(MILLISECONDS_PER_FRAME, this);
         timer.start();
+
+        pauseMessage = new JLabel("PAUSED", SwingConstants.CENTER );
+        pauseMessage.setForeground(Color.WHITE);
+        pauseMessage.setFont(new Font("Consolas", Font.BOLD, 64));
+        pauseMessage.setBounds(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
     }
 
     void loadImages(int numberOfLanes) {
@@ -273,6 +280,16 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         if (e.getKeyCode() == KeyEvent.VK_RIGHT && currentLane != NUMBER_OF_LANES - 1) {
             currentLane++;
             playSound("Sounds/MoveLeftRight.wav");
+        }
+        if (e.getKeyCode() == KeyEvent.VK_P || e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            if (timer.isRunning()) {
+                add(pauseMessage);
+                repaint();
+                timer.stop();
+            } else {
+                remove(pauseMessage);
+                timer.start();
+            }
         }
     }
     
