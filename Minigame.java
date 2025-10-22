@@ -59,24 +59,25 @@ public class Minigame extends JPanel implements ActionListener, KeyListener {
             failGame();
         }
     }
-
+    
     @Override
     public void keyPressed(KeyEvent e) {
-
+        
     }
-
+    
     @Override
     public void keyReleased(KeyEvent e) {
         
     }
-
+    
     @Override
     public void keyTyped(KeyEvent e) {
         
     }
-
+    
     @Override
     public void actionPerformed(ActionEvent e) {
+        System.out.println("------------------------");
         progress();
     }
 }

@@ -92,13 +92,16 @@ public class ConnectWires extends Minigame {
 
     private void selectLeft(int index) {
         selectedLeft = index;
-        for (JButton btn : leftBtns)
+        for (JButton btn : leftBtns) {
             btn.setBorder(BorderFactory.createLineBorder(buttonColors.get(btn), 3, true));
+        }
         leftBtns[index].setBorder(BorderFactory.createLineBorder(Color.WHITE, 4, true));
     }
 
     private void selectRight(int index) {
-        if (selectedLeft == -1) return;
+        if (selectedLeft == -1) {
+            return;
+        }
 
         JButton left = leftBtns[selectedLeft];
         JButton right = rightBtns[index];
@@ -139,9 +142,11 @@ public class ConnectWires extends Minigame {
         }
 
         selectedLeft = -1;
-        for (JButton btn : leftBtns)
-            if (btn.isEnabled())
+        for (JButton btn : leftBtns) {
+            if (btn.isEnabled()) {
                 btn.setBorder(BorderFactory.createLineBorder(buttonColors.get(btn), 3, true));
+            }
+        }
     }
 
     @Override
@@ -155,7 +160,11 @@ public class ConnectWires extends Minigame {
             // Glow effect — multiple strokes with fading opacity
             for (int glow = 12; glow >= 1; glow -= 3) {
                 float alpha = (float) glow / 20f;
-                g2.setColor(new Color(c.color.getRed(), c.color.getGreen(), c.color.getBlue(), (int) (alpha * 255)));
+                g2.setColor(new Color(c.color.getRed(),
+                    c.color.getGreen(),
+                    c.color.getBlue(),
+                    (int) (alpha * 255))
+                );
                 g2.setStroke(new BasicStroke(glow, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
                 g2.drawLine(c.start.x, c.start.y, c.end.x, c.end.y);
             }
@@ -167,8 +176,10 @@ public class ConnectWires extends Minigame {
     }
 
     static class Connection {
-        Point start, end;
+        Point start;
+        Point end;
         Color color;
+        
         Connection(Point s, Point e, Color c) {
             start = s;
             end = e;
