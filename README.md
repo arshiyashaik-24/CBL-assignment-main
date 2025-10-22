@@ -49,8 +49,6 @@ A major design focus was on **clarity, responsiveness, and feedback**.
 
 ## 🎯 Mini Games  
 To expand gameplay variety and demonstrate modular programming, several themed **mini-games** are included:  
-- 🎯 **Archery**  
-- 🪢 **Pull the Rope**  
 - ❌⭕ **Tic Tac Toe**  
 - 🍓 **Tap Match Fruits**  
 - 🔌 **Connect Wires**  
