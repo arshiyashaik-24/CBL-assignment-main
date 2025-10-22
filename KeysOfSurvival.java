@@ -49,7 +49,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     private int health = 0;
     private int doorsOpened = 0;
 
-    private javax.swing.Timer timer;
+    public javax.swing.Timer timer;
     private final JLabel pauseMessage;
 
     /** Constructor without mute */
