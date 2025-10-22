@@ -341,12 +341,12 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
                     if (currentKeys[color] == 0) {
                         playSound("/Sounds/HitObstacle.wav");
                         timer.stop();
-                        Random game = new Random();
-                        if (game.nextInt(4) == 1){
+                        int minigameInt = random.nextInt(4);
+                        if (minigameInt == 1) {
                             new ConnectWires(thisGame, speed);
-                        } else if (game.nextInt(4) == 2){
+                        } else if (minigameInt == 2) {
                             new ZombieTicTacToe(thisGame, speed);
-                        } else if (game.nextInt(4) == 3){
+                        } else if (minigameInt == 3) {
                             new ZombieFruitSequenceMini(thisGame, speed);
                         } else {
                             new TapMatchFruitsMini(thisGame, speed);
