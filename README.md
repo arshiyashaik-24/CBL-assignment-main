@@ -12,6 +12,85 @@
 Players must **run through three (or more!) lanes**, **collect keys**, and **unlock matching doors** to save survivors — all while avoiding zombies and managing limited health. Each run tests quick thinking, timing, and adaptability in an unpredictable environment.  
 
 ---
+## How to Run
+1. Setup Requirements
+
+Before running Keys of Survival, ensure your system meets the following prerequisites:
+
+Java JDK 17 or higher installed on your system
+
+Download Java JDK
+
+A Java IDE (e.g., IntelliJ IDEA, Eclipse, or NetBeans) or a command line environment with Java configured in PATH.
+
+All game assets (sprites, background images, audio files) are located in the project’s assets/ folder.
+
+Ensure all .java files are compiled together — the Main.java file serves as the entry point of the program.
+
+2. Step-by-Step Instructions to Run the Game
+Open your IDE (e.g., IntelliJ or Eclipse).
+
+Import or open the project folder named KeysOfSurvival.
+
+Ensure the folder structure is as follows:
+
+KeysOfSurvival/<br/>
+├── .vscode/<br/>
+├── Images/<br/>
+│ ├── sprites/<br/>
+│ ├── background/<br/>
+│ └── icons/<br/>
+├── Sounds/<br/>
+├── ConnectWires.java<br/>
+├── Countdowns.java<br/>
+├── JumpOver.java<br/>
+├── KeysOfSurvival.java<br/>
+├── Main.java<br/>
+├── Minigame.java<br/>
+├── TapMatchFruitsMini.java<br/>
+├── ZombieFruitSequenceMini.java<br/>
+├── ZombieTicTacToe.java<br/>
+└── README.md<br/>
+
+Right-click on Main.java → Run ‘Main’.
+
+The main window will launch with the title screen — click Start or press Enter to begin.
+
+3. Features to Test During Gameplay
+
+| **Feature**                   | **How to Access/Test**                                                    | **Expected Behavior**                                                                  |
+| ----------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| **Lane Movement (Core UX)**   | Use **Left** / **Right Arrow Keys** to move the runner between lanes.     | Runner moves smoothly with visible lane shifts and no input delay.                     |
+| **Key Collection**            | Move over colored keys while running.                                     | Key disappears; HUD updates with new key icon.                                         |
+| **Door Interaction**          | Encounter locked doors matching your collected keys.                      | Correct key opens door with animation; wrong key ends run or triggers mini-game.       |
+| **Zombies (Obstacles)**       | Stay in the same lane as a zombie.                                        | Collision causes a **Game Over** or revival option if health > 3.                      |
+| **Health & Revival**          | Open 5 doors to gain +1 heart; collide with zombie to test revival popup. | Revival prompt appears, allowing player to continue if hearts ≥ 3.                     |
+| **Speed Progression**         | Play continuously for several minutes.                                    | Game speed increases gradually (×2 → ×5), “SPEED UP!” appears mid-screen.              |
+| **Pause / Resume**            | Press **P** or **ESC** at any point.                                      | Game pauses with overlay; press again to resume.                                       |
+| **Mute Button**               | Click the sound icon in top-right corner.                                 | Toggles sound on/off with visual change in icon.                                       |
+| **HUD Functionality**         | Observe health, keys, and score during play.                              | All values update in real time with clear readability.                                 |
+| **Mini-Games**                | Hit a locked door without a matching key.                                 | A random mini-game (Tic Tac Toe, Tap Fruits, Connect Wires, Button Sequence) launches. |
+| **Randomized Map Generation** | Restart the game multiple times.                                          | Each run shows a unique layout of doors, keys, and zombies.                            |
+| **Visual & Audio Feedback**   | Observe background, animations, and sounds.                               | Background scrolls; sound effects play contextually; sprites animate smoothly.         |
+
+
+4. Troubleshooting
+
+Black Screen / No Window Appears: Ensure Main.java contains your game initialization call (new GamePanel();).
+
+No Sound: Check that .wav or .mp3 files are correctly placed in the assets/sounds directory.
+
+Lag or Frame Drops: Reduce animation delay or disable background scrolling in code for testing.
+
+5. Testing Checklist
+<br/>
+✅ Smooth lane transitions <br/>
+✅ Correct key-door logic <br/>
+✅ Functional HUD & live score updates <br/>
+✅ Speed progression triggers correctly <br/>
+✅ Pause/resume and mute systems work <br/>
+✅ All mini-games launch and return to main gameplay <br/>
+✅ Random map generation produces non-repetitive runs <br/>
 
 ## Core Gameplay Summary  
 - **Lane Movement:** Move left and right using arrow keys. Smooth, responsive control ensures intuitive gameplay.  
