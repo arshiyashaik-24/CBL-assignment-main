@@ -1,5 +1,9 @@
 import java.util.Random;
 
+/**
+ * This class, used in conjunction with KeysOfSurvival.java controls when obstacles are spawned,
+ * or when to speed up and add colors.
+ */
 public class Countdowns {
     Random random = new Random();
 
@@ -9,18 +13,21 @@ public class Countdowns {
 
     // However, the actual FPS of the game is somewhat slower, so the durations may be longer.
 
+    // These are the durations set at the start of the game.
     final int keyCountdownStart = 300; // 0.6 seconds at speed 10
     final int zombieCountdownStart = 450 + 300 * random.nextInt(8); // 0.8 - 5.6 seconds at speed 10
     final int doorCountdownStart = 600; // 1.2 seconds at speed 10
     final int speedUpCountdownStart = 600; // 12 seconds
     final int newColorCountdownStart = 600; // 12 seconds
     
+    // These are the replenished durations.
     int keyCountdownRestart = 600;
     int zombieCountdownRestart = 300 + 300 * random.nextInt(8);
     int doorCountdownRestart = 600;
     int speedUpCountdownRestart = 600;
     int newColorCountdownRestart = 600;
     
+    // These are the actual countdowns.
     int keyCountdown = keyCountdownStart;
     int zombieCountdown = zombieCountdownStart;
     int doorCountdown = doorCountdownStart;
