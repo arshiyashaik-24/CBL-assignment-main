@@ -23,7 +23,7 @@ public class TapMatchFruitsMini extends Minigame {
         setBackground(new Color(15, 18, 15));
 
         // Title
-        JLabel title = new JLabel("☣ Tap Match Fluids! ☣", SwingConstants.CENTER);
+        JLabel title = new JLabel("Tap Match Fluids!", SwingConstants.CENTER);
         title.setFont(new Font("Stencil", Font.BOLD, 36));
         title.setForeground(new Color(200, 50, 50));
         title.setBounds(0, 30, MINIGAME_WIDTH, 50);
@@ -93,7 +93,7 @@ public class TapMatchFruitsMini extends Minigame {
             }
             if (score >= winTarget) {
                 JOptionPane.showMessageDialog(this,
-                    "🎉 Mission Complete! Collected enough fluids! ☣");
+                    "🎉 Mission Complete! Collected enough fluids!");
                 resumeGame();
                 return;
             }
@@ -104,7 +104,7 @@ public class TapMatchFruitsMini extends Minigame {
             }
             if (lives <= 0) {
                 JOptionPane.showMessageDialog(this,
-                    "No lives left! Zombies drank all the fluids! ☣");
+                    "No lives left! Zombies drank all the fluids!");
                 failGame();
                 return;
             }

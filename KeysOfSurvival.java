@@ -193,22 +193,36 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
             }
         }
 
-        // ⚡ SPEED UP! Fade + Zoom effect
+        // ⚡ SPEED UP! Fade + Zoom + Glow effect
         long elapsed = System.currentTimeMillis() - speedUpMessageTime;
         if (elapsed < SPEEDUP_DISPLAY_DURATION) {
             float progress = (float) elapsed / SPEEDUP_DISPLAY_DURATION;
-            int alpha = (int) (255 * (1 - progress));
+            int alpha = (int) (255 * (1 - progress)); // fade alpha 255 → 0
             alpha = Math.max(0, Math.min(alpha, 255));
 
-            // Zoom effect
-            float scale = 1.0f + 0.2f * (1 - progress);
-            Font originalFont = g2d.getFont();
-            g2d.setFont(originalFont.deriveFont(AffineTransform.getScaleInstance(scale, scale)));
+        // Smooth zoom (slightly pulse in)
+        float scale = 1.0f + 0.3f * (1 - progress); // start bigger, shrink down
+        Font originalFont = g2d.getFont();
+        Font bigFont = new Font("Consolas", Font.BOLD, 72); // larger, bolder
+        g2d.setFont(bigFont.deriveFont(AffineTransform.getScaleInstance(scale, scale)));
 
-            g2d.setColor(new Color(255, 60, 60, alpha));
-            g2d.drawString("SPEED UP!", FRAME_WIDTH / 2 - 140, FRAME_HEIGHT / 2);
-            g2d.setFont(originalFont);
+        int textX = FRAME_WIDTH / 2 - 180;
+        int textY = FRAME_HEIGHT / 2;
+
+        // Glow layer (soft yellow outer glow)
+        for (int i = 4; i > 0; i--) {
+            g2d.setColor(new Color(255, 220, 100, Math.max(0, alpha - i * 40)));
+            g2d.drawString("SPEED UP!", textX - i, textY - i);
+            g2d.drawString("SPEED UP!", textX + i, textY + i);
         }
+
+    // Main text (white core)
+    g2d.setColor(new Color(255, 255, 255, alpha));
+    g2d.drawString("SPEED UP!", textX, textY);
+
+    g2d.setFont(originalFont);
+}
+
     }
 
     /** Spawn a door, key, or zombie */
