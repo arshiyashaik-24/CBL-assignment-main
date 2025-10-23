@@ -2,6 +2,9 @@ import java.awt.*;
 import java.util.*;
 import javax.swing.*;
 
+/**
+ * ConnectWires is a minigame where the player connects colored wires by matching buttons.
+ */
 public class ConnectWires extends Minigame {
     private JButton[] leftBtns = new JButton[4];
     private JButton[] rightBtns = new JButton[4];
@@ -17,6 +20,12 @@ public class ConnectWires extends Minigame {
     // Store each button's color separately (no LineBorder casting)
     private Map<JButton, Color> buttonColors = new HashMap<>();
 
+    /**
+     * Constructs a ConnectWires minigame with the specified main game and speed.
+     *
+     * @param mainGame the main KeysOfSurvival game instance
+     * @param speed the speed factor for the minigame
+     */
     ConnectWires(KeysOfSurvival mainGame, int speed) {
         super(mainGame, speed, "⚡ Connect the Wires! — Cyber Grid", 150000 / speed);
         
@@ -69,6 +78,11 @@ public class ConnectWires extends Minigame {
         shuffleAndPlace();
     }
 
+    /**
+     * Creates a button with the specified border color.
+     * @param borderColor the color of the button border
+     * @return the created JButton
+     */
     private JButton makeButton(Color borderColor) {
         JButton btn = new JButton(" ");
         btn.setBackground(new Color(25, 25, 30));
@@ -78,6 +92,9 @@ public class ConnectWires extends Minigame {
         return btn;
     }
 
+    /**
+     * Randomly shuffles and places the left and right buttons on the panel.
+     */
     private void shuffleAndPlace() {
         java.util.List<Integer> positions = Arrays.asList(80, 150, 220, 290);
         Collections.shuffle(positions);
@@ -90,6 +107,10 @@ public class ConnectWires extends Minigame {
         }
     }
 
+    /**
+     * Handles selection of a left button.
+     * @param index the index of the selected left button
+     */
     private void selectLeft(int index) {
         selectedLeft = index;
         for (JButton btn : leftBtns) {
@@ -98,6 +119,10 @@ public class ConnectWires extends Minigame {
         leftBtns[index].setBorder(BorderFactory.createLineBorder(Color.WHITE, 4, true));
     }
 
+    /**
+     * Handles selection of a right button and checks for a match.
+     * @param index the index of the selected right button
+     */
     private void selectRight(int index) {
         if (selectedLeft == -1) {
             return;
@@ -180,6 +205,14 @@ public class ConnectWires extends Minigame {
         Point end;
         Color color;
         
+        /**
+         * Constructs a Connection object representing a wire 
+         * between two points with a specific color.
+         *
+         * @param s the starting point of the connection
+         * @param e the ending point of the connection
+         * @param c the color of the connection
+         */
         Connection(Point s, Point e, Color c) {
             start = s;
             end = e;

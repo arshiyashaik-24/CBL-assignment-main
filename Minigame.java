@@ -2,6 +2,9 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+/**
+ * Minigame panel that handles a timed minigame with progress bar and key events.
+ */
 public class Minigame extends JPanel implements ActionListener, KeyListener {
     static final int MINIGAME_WIDTH = 960;
     static final int MINIGAME_HEIGHT = 960;
@@ -16,8 +19,19 @@ public class Minigame extends JPanel implements ActionListener, KeyListener {
 
     JFrame frame;
 
-    Minigame(KeysOfSurvival mainGame, int speed, String name, int time) { // Timer reference is needed to restart the main game.
-        setPreferredSize(new Dimension(MINIGAME_WIDTH, MINIGAME_HEIGHT));
+    /**
+     * Constructs a Minigame panel.
+     * 
+     * @param mainGame Reference to the main game for resuming or failing.
+     * @param speed Speed parameter for the minigame.
+     * @param name Name of the minigame window.
+     * @param time Time limit for the minigame.
+     */
+    Minigame(KeysOfSurvival mainGame, int speed, String name, int time) {
+        // Timer reference is needed to restart the main game.
+        setPreferredSize(
+            new Dimension(MINIGAME_WIDTH, MINIGAME_HEIGHT)
+        );
 
         frame = new JFrame(name);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Needed to end program
@@ -39,6 +53,9 @@ public class Minigame extends JPanel implements ActionListener, KeyListener {
         timer.start();
     }
 
+    /**
+     * Resumes the main game by disposing the minigame frame and restarting the main game timer.
+     */
     void resumeGame() {
         JFrame minigameFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
         minigameFrame.dispose();
@@ -46,6 +63,10 @@ public class Minigame extends JPanel implements ActionListener, KeyListener {
         mainGame.timer.start(); // Start the main game again.
     }
 
+    /**
+     * Handles failure in the minigame by disposing the frame and triggering game over 
+     * in the main game.
+     */
     void failGame() {
         JFrame minigameFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
         minigameFrame.dispose();
@@ -53,6 +74,9 @@ public class Minigame extends JPanel implements ActionListener, KeyListener {
         mainGame.gameOver();
     }
 
+    /**
+     * Updates the progress bar by decreasing its value and checks for failure condition.
+     */
     void progress() {
         progressBar.setValue(progressBar.getValue() - MILLISECONDS_PER_FRAME);
         if (progressBar.getValue() == 0) {

@@ -71,6 +71,9 @@ public class ZombieFruitSequenceMini extends Minigame {
         startNewRound();
     }
 
+    /**
+     * Starts a new round by adding to the sequence and displaying it.
+     */
     private void startNewRound() {
         acceptingInput = false;
         sequence.add(random.nextInt(4)); // add a new fruit
@@ -107,7 +110,6 @@ public class ZombieFruitSequenceMini extends Minigame {
      * Handles player input when a fruit button is pressed.
      * @param index the index of the button pressed
      */
-
     private void handlePlayerInput(int index) {
         if (!acceptingInput) {
             return;
