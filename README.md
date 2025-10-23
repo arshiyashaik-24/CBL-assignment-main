@@ -34,20 +34,24 @@ Import or open the project folder named KeysOfSurvival.
 
 Ensure the folder structure is as follows:
 
-KeysOfSurvival/ <br/>
-├── src/ <br/> 
-│   ├── Main.java <br/>
-│   ├── GamePanel.java <br/>
-│   ├── Runner.java <br/>
-│   ├── Door.java <br/>
-│   ├── Key.java <br/>
-│   ├── Zombie.java <br/>
-│   └── ... <br/>
-├── assets/ <br/>
-│   ├── sprites/ <br/>
-│   ├── sounds/ <br/>
-│   └── background/ <br/>
-└── README.md <br/>
+KeysOfSurvival/<br/>
+├── .vscode/<br/>
+├── Images/<br/>
+│ ├── sprites/<br/>
+│ ├── background/<br/>
+│ └── icons/<br/>
+├── Sounds/<br/>
+├── ConnectWires.java<br/>
+├── Countdowns.java<br/>
+├── JumpOver.java<br/>
+├── KeysOfSurvival.java<br/>
+├── Main.java<br/>
+├── Minigame.java<br/>
+├── TapMatchFruitsMini.java<br/>
+├── ZombieFruitSequence.java<br/>
+├── ZombieFruitSequenceMini.java<br/>
+├── ZombieTicTacToe.java<br/>
+└── README.md<br/>
 
 Right-click on Main.java → Run ‘Main’.
 
