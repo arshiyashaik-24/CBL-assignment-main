@@ -5,6 +5,11 @@ import java.util.List;
 import java.util.Random;
 import javax.swing.*;
 
+/**
+ * ZombieTicTacToe is a minigame where the player competes against a zombie AI 
+ * in a game of Tic-Tac-Toe.
+ * The player has limited lives and must win rounds to survive.
+ */
 public class ZombieTicTacToe extends Minigame {
     private JButton[] buttons = new JButton[9];
     private boolean playerTurn = true;
@@ -12,8 +17,14 @@ public class ZombieTicTacToe extends Minigame {
     private Random random = new Random();
     private int lives = 3;
 
+    /**
+     * Creates the Zombie Tic-Tac-Toe minigame UI and initializes game state.
+     *
+     * @param mainGame Reference to the main KeysOfSurvival game controller.
+     * @param speed    Speed modifier used to scale the round timeout.
+     */
     public ZombieTicTacToe(KeysOfSurvival mainGame, int speed) {
-        super(mainGame, speed, "☣ Zombie Tic-Tac-Toe ☣", 20000 / speed); 
+        super(mainGame, speed, "☣ Zombie Tic-Tac-Toe ☣", 20000 / speed);
         setLayout(null);
         setBackground(new Color(15, 18, 15));
 
@@ -210,8 +221,7 @@ public class ZombieTicTacToe extends Minigame {
     private boolean endRoundDialog(String message, boolean playerWon) {
         if (playerWon) {
             highlightWinner(getWinningPattern("X"));
-        }
-        else if (!message.contains("Draw")) {
+        } else if (!message.contains("Draw")) {
             highlightWinner(getWinningPattern("O"));
         }
 
