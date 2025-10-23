@@ -149,7 +149,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         }
     }
 
-    /** Play a sound if not muted */
+    /** Play a sound if not muted. */
     private void playSound(String soundFile) {
         if (isMuted) {
             return;
@@ -274,18 +274,21 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
 
     }
 
-    /** Spawn a door, key, or zombie */
+    // The following methods spawns a door, key or zombie respectively
+
     void spawnDoor() {
         obstacles.addFirst(new Door(random.nextInt(NUMBER_OF_LANES), -PLAYER_HEIGHT)); 
     }
+
     void spawnKey() {
         obstacles.addFirst(new Key(random.nextInt(NUMBER_OF_LANES), -PLAYER_HEIGHT));
     }
+
     void spawnZombie() {
         obstacles.addFirst(new Zombie(random.nextInt(NUMBER_OF_LANES), -PLAYER_HEIGHT));
     }
 
-    /** Game loop */
+    /** Game loop. */
     @Override
     public void actionPerformed(ActionEvent e) {
         byte countdownAction = countdowns.countdown(speed);
@@ -331,7 +334,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         repaint();
     }
 
-    /** Handle player input */
+    /** Handle player input. */
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_LEFT && currentLane != 0) {
@@ -344,10 +347,12 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         }
         if (e.getKeyCode() == KeyEvent.VK_P || e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             if (timer.isRunning()) {
-                add(pauseMessage); repaint(); timer.stop();
-            }
-            else {
-                remove(pauseMessage); timer.start();
+                add(pauseMessage);
+                repaint();
+                timer.stop();
+            } else {
+                remove(pauseMessage);
+                timer.start();
             }
         }
     }
@@ -356,27 +361,35 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
 
     @Override public void keyTyped(KeyEvent e) {}
 
-    /** Base obstacle class */
+    /** This is the base obstacle class.
+     *  Each of the obstacles are defined by a lane and y position.
+     *  Some obstacles may have a color.
+     *  It is recorded whether each obstacle has passed the player or not.
+     */
     class Obstacle {
         int lane;
         int y;
         int color;
         boolean passed = false;
 
+        /** This constructor determines where the obstacle spawns. */
         Obstacle(int lane, int y) {
-            this.lane = lane; this.y = y;
+            this.lane = lane;
+            this.y = y;
         }
 
+        /** Moves the object down. */
         void move() {
             y += speed;
         }
     }
 
-    /** Door obstacle */
+    /** This is the door obstacle. */
     class Door extends Obstacle {
         boolean opened = false;
         
-        Door (int lane, int y) {
+        /** Assigns a random color to the door. */
+        Door(int lane, int y) {
             super(lane, y);
             color = random.nextInt(currentNumberOfColors);
         }
@@ -412,10 +425,12 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         }
     }
 
-    /** Key obstacle */
+    /** This is the key obstacle. */
     class Key extends Obstacle {
         boolean obtained = false;
-        Key (int lane, int y) {
+        
+        /** Assigns a random color to the key. */
+        Key(int lane, int y) {
             super(lane, y);
             color = random.nextInt(currentNumberOfColors);
         }
@@ -434,7 +449,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         }
     }
 
-    /** Zombie obstacle */
+    /** This is the zombie obstacle. */
     class Zombie extends Obstacle {
         Zombie(int lane, int y) {
             super(lane, y);
@@ -454,7 +469,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         }
     }
 
-    /** Handle game over */
+    /** Handle game over. */
     void gameOver() {
         if (health >= 3) {
             int option = JOptionPane.showConfirmDialog(this,
