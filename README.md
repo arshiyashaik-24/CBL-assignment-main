@@ -34,20 +34,20 @@ Import or open the project folder named KeysOfSurvival.
 
 Ensure the folder structure is as follows:
 
-KeysOfSurvival/
-├── src/ \n
-│   ├── Main.java
-│   ├── GamePanel.java
-│   ├── Runner.java
-│   ├── Door.java
-│   ├── Key.java
-│   ├── Zombie.java
-│   └── ...
-├── assets/
-│   ├── sprites/
-│   ├── sounds/
-│   └── background/
-└── README.md
+KeysOfSurvival/ <br/>
+├── src/ <br/> 
+│   ├── Main.java <br/>
+│   ├── GamePanel.java <br/>
+│   ├── Runner.java <br/>
+│   ├── Door.java <br/>
+│   ├── Key.java <br/>
+│   ├── Zombie.java <br/>
+│   └── ... <br/>
+├── assets/ <br/>
+│   ├── sprites/ <br/>
+│   ├── sounds/ <br/>
+│   └── background/ <br/>
+└── README.md <br/>
 
 Right-click on Main.java → Run ‘Main’.
 
@@ -80,14 +80,14 @@ No Sound: Check that .wav or .mp3 files are correctly placed in the assets/sound
 Lag or Frame Drops: Reduce animation delay or disable background scrolling in code for testing.
 
 5. Testing Checklist
-
-✅ Smooth lane transitions
-✅ Correct key-door logic
-✅ Functional HUD & live score updates
-✅ Speed progression triggers correctly
-✅ Pause/resume and mute systems work
-✅ All mini-games launch and return to main gameplay
-✅ Random map generation produces non-repetitive runs
+<br/>
+✅ Smooth lane transitions <br/>
+✅ Correct key-door logic <br/>
+✅ Functional HUD & live score updates <br/>
+✅ Speed progression triggers correctly <br/>
+✅ Pause/resume and mute systems work <br/>
+✅ All mini-games launch and return to main gameplay <br/>
+✅ Random map generation produces non-repetitive runs <br/>
 
 ## Core Gameplay Summary  
 - **Lane Movement:** Move left and right using arrow keys. Smooth, responsive control ensures intuitive gameplay.  
