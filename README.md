@@ -35,7 +35,7 @@ Import or open the project folder named KeysOfSurvival.
 Ensure the folder structure is as follows:
 
 KeysOfSurvival/
-├── src/
+├── src/ \n
 │   ├── Main.java
 │   ├── GamePanel.java
 │   ├── Runner.java
