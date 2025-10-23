@@ -24,7 +24,7 @@ public class Countdowns {
     int keyCountdown = keyCountdownStart;
     int zombieCountdown = zombieCountdownStart;
     int doorCountdown = doorCountdownStart;
-    int speedUpCountdown = doorCountdownStart;
+    int speedUpCountdown = speedUpCountdownStart;
     int newColorCountdown = newColorCountdownStart;
 
     /**
