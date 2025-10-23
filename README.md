@@ -48,7 +48,6 @@ KeysOfSurvival/<br/>
 ├── Main.java<br/>
 ├── Minigame.java<br/>
 ├── TapMatchFruitsMini.java<br/>
-├── ZombieFruitSequence.java<br/>
 ├── ZombieFruitSequenceMini.java<br/>
 ├── ZombieTicTacToe.java<br/>
 └── README.md<br/>
