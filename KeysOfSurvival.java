@@ -280,13 +280,16 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
             }
         }
         if (countdownAction >= 4) { 
-            countdownAction -= 4; spawnZombie();
+            countdownAction -= 4;
+            spawnZombie();
         }
         if (countdownAction >= 2) {
-            countdownAction -= 2; spawnKey();
+            countdownAction -= 2;
+            spawnKey();
         }
         if (countdownAction >= 1) {
-            countdownAction -= 1; spawnDoor();
+            countdownAction -= 1;
+            spawnDoor();
         }
 
         playerAnimationCountdown -= speed / 10;
@@ -349,8 +352,8 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     class Door extends Obstacle {
         boolean opened = false;
         
-        Door(int lane, int y) {
-            super(lane,y);
+        Door (int lane, int y) {
+            super(lane, y);
             color = random.nextInt(currentNumberOfColors);
         }
 
@@ -388,7 +391,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     /** Key obstacle */
     class Key extends Obstacle {
         boolean obtained = false;
-        Key(int lane, int y) {
+        Key (int lane, int y) {
             super(lane, y);
             color = random.nextInt(currentNumberOfColors);
         }
