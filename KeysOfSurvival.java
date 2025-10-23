@@ -1,7 +1,8 @@
-import java.awt.*;       
-import java.awt.event.*; 
-import java.io.File;     
-import java.util.*;      
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.geom.AffineTransform;
+import java.io.File;
+import java.util.*;
 import javax.swing.*;
 import javax.sound.sampled.*;
 
@@ -18,10 +19,10 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     static final int MILLISECONDS_PER_FRAME = 20;
     static final int NUMBER_OF_COLORS = 8;
     int currentNumberOfColors = 4;
-    int speed = 10; 
+    int speed = 10;
     static int currentLane;
 
-    public static boolean isMuted = false; // Mute flag
+    public static boolean isMuted = false;
 
     private final Countdowns countdowns = new Countdowns();
     static final int PLAYER_ANIMATION_DURATION = 4;
@@ -30,7 +31,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     static final int NUMBER_OF_PLAYER_SPRITES = new File("Images/Player").listFiles().length;
 
     private Image backgroundImage;
-    private int backgroundPosition = 0; 
+    private int backgroundPosition = 0;
     private final Image[] playerImage = new Image[NUMBER_OF_PLAYER_SPRITES];
     private Image peopleIcon;
     private Image heartIcon;
@@ -51,6 +52,11 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
 
     public javax.swing.Timer timer;
     private final JLabel pauseMessage;
+
+    // 🪟 New taskbar + "SPEED UP!" variables
+    private static final int TASKBAR_HEIGHT = 80;
+    private long speedUpMessageTime = 0;
+    private static final int SPEEDUP_DISPLAY_DURATION = 1000; // ms
 
     /** Constructor without mute */
     public KeysOfSurvival(int numberOfLanes) {
@@ -116,60 +122,92 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setFont(new Font(g.getFont().getFontName(), Font.PLAIN, 20));
+        Graphics2D g2d = (Graphics2D) g;
 
-        // Draw background
-        g.drawImage(backgroundImage, 0, backgroundPosition, FRAME_WIDTH, FRAME_HEIGHT, this);
-        g.drawImage(backgroundImage, 0, backgroundPosition - FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT, this);
+        g2d.setFont(new Font(g2d.getFont().getFontName(), Font.PLAIN, 20));
+
+        // Background
+        g2d.drawImage(backgroundImage, 0, backgroundPosition, FRAME_WIDTH, FRAME_HEIGHT, this);
+        g2d.drawImage(backgroundImage, 0, backgroundPosition - FRAME_HEIGHT, FRAME_WIDTH, FRAME_HEIGHT, this);
 
         boolean playerDrawn = false;
 
-        // Draw obstacles and player
+        // Obstacles and player
         for (Obstacle obstacle : obstacles) {
             if (obstacle.y > PLAYER_Y && !playerDrawn) {
                 playerDrawn = true;
-                g.drawImage(playerImage[playerAnimationFrame],
-                        ((FRAME_WIDTH/NUMBER_OF_LANES*(2*currentLane+1)-PLAYER_WIDTH))/2,
+                g2d.drawImage(playerImage[playerAnimationFrame],
+                        ((FRAME_WIDTH / NUMBER_OF_LANES * (2 * currentLane + 1) - PLAYER_WIDTH)) / 2,
                         PLAYER_Y, PLAYER_WIDTH, PLAYER_HEIGHT, this);
             }
-            Image image = (obstacle instanceof Door) ? 
-                    (((Door) obstacle).opened ? doorImages2[obstacle.color] : doorImages[obstacle.color]) :
-                    (obstacle instanceof Key ? keyImages[obstacle.color] : zombieImage);
+
+            Image image = (obstacle instanceof Door)
+                    ? (((Door) obstacle).opened ? doorImages2[obstacle.color] : doorImages[obstacle.color])
+                    : (obstacle instanceof Key ? keyImages[obstacle.color] : zombieImage);
+
             if (!(obstacle instanceof Key && ((Key) obstacle).obtained)) {
-                g.drawImage(image,
-                        ((FRAME_WIDTH/NUMBER_OF_LANES*(2*obstacle.lane+1)-PLAYER_WIDTH))/2,
+                g2d.drawImage(image,
+                        ((FRAME_WIDTH / NUMBER_OF_LANES * (2 * obstacle.lane + 1) - PLAYER_WIDTH)) / 2,
                         obstacle.y, PLAYER_WIDTH, PLAYER_HEIGHT, this);
             }
         }
 
         if (!playerDrawn) {
-            g.drawImage(playerImage[playerAnimationFrame],
-                    ((FRAME_WIDTH/NUMBER_OF_LANES*(2*currentLane+1)-PLAYER_WIDTH))/2,
+            g2d.drawImage(playerImage[playerAnimationFrame],
+                    ((FRAME_WIDTH / NUMBER_OF_LANES * (2 * currentLane + 1) - PLAYER_WIDTH)) / 2,
                     PLAYER_Y, PLAYER_WIDTH, PLAYER_HEIGHT, this);
         }
 
-        // Draw score, health, and keys
-        g.setColor(Color.WHITE);
-        g.drawImage(peopleIcon, 20, 12, 20, 20, this);
-        g.drawString("People saved: " + score, 42, 28);
+        // 🖤 Gradient overlay for top UI
+        GradientPaint gradient = new GradientPaint(0, 0, new Color(0, 0, 0, 180),
+                0, TASKBAR_HEIGHT, new Color(0, 0, 0, 0));
+        g2d.setPaint(gradient);
+        g2d.fillRect(0, 0, FRAME_WIDTH, TASKBAR_HEIGHT);
 
+        // UI: Score
+        g2d.setColor(Color.WHITE);
+        g2d.drawImage(peopleIcon, 20, 12, 24, 24, this);
+        g2d.drawString("People saved: " + score, 52, 32);
+
+        // UI: Hearts
+        int heartY = 36;
         if (health > 8) {
-            g.drawImage(heartIcon, 20, 30, 20, 20, this);
-            g.drawString("× " + health, 46, 46);
+            g2d.drawImage(heartIcon, 20, heartY, 24, 24, this);
+            g2d.drawString("× " + health, 50, heartY + 18);
         } else {
             for (int i = 0; i < health; i++) {
-                g.drawImage(heartIcon, 20 + 30*i, 30, 20, 20, this);
+                g2d.drawImage(heartIcon, 20 + 28 * i, heartY, 24, 24, this);
             }
         }
 
+        // UI: Keys
         for (int i = 0; i < NUMBER_OF_COLORS; i++) {
             if (currentKeys[i] > 0) {
-                g.drawImage(keyIcons[i], FRAME_WIDTH-210 + 50*(i%4), 10+50*(i/4), 40, 20, this);
+                int x = FRAME_WIDTH - 210 + 50 * (i % 4);
+                int y = 10 + 50 * (i / 4);
+                g2d.drawImage(keyIcons[i], x, y, 40, 20, this);
                 if (currentKeys[i] > 1) {
-                    g.setColor(COLORS[i]);
-                    g.drawString("" + currentKeys[i], FRAME_WIDTH-205 + 50*(i%4), 50 + 50*(i/4));
+                    g2d.setColor(COLORS[i]);
+                    g2d.drawString("" + currentKeys[i], x + 15, y + 40);
                 }
             }
+        }
+
+        // ⚡ SPEED UP! Fade + Zoom effect
+        long elapsed = System.currentTimeMillis() - speedUpMessageTime;
+        if (elapsed < SPEEDUP_DISPLAY_DURATION) {
+            float progress = (float) elapsed / SPEEDUP_DISPLAY_DURATION;
+            int alpha = (int) (255 * (1 - progress));
+            alpha = Math.max(0, Math.min(alpha, 255));
+
+            // Zoom effect
+            float scale = 1.0f + 0.2f * (1 - progress);
+            Font originalFont = g2d.getFont();
+            g2d.setFont(originalFont.deriveFont(AffineTransform.getScaleInstance(scale, scale)));
+
+            g2d.setColor(new Color(255, 60, 60, alpha));
+            g2d.drawString("SPEED UP!", FRAME_WIDTH / 2 - 140, FRAME_HEIGHT / 2);
+            g2d.setFont(originalFont);
         }
     }
 
@@ -178,18 +216,27 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     void spawnKey() { obstacles.addFirst(new Key(random.nextInt(NUMBER_OF_LANES), -PLAYER_HEIGHT)); }
     void spawnZombie() { obstacles.addFirst(new Zombie(random.nextInt(NUMBER_OF_LANES), -PLAYER_HEIGHT)); }
 
-    /** Game loop executed every timer tick */
+    /** Game loop */
     @Override
     public void actionPerformed(ActionEvent e) {
         byte countdownAction = countdowns.countdown(speed);
 
-        if (countdownAction >= 16) { countdownAction -= 16; if (currentNumberOfColors < 8) currentNumberOfColors++; }
-        if (countdownAction >= 8)  { countdownAction -= 8; if (speed < 50) speed += 5; }
-        if (countdownAction >= 4)  { countdownAction -= 4; spawnZombie(); }
-        if (countdownAction >= 2)  { countdownAction -= 2; spawnKey(); }
-        if (countdownAction >= 1)  { countdownAction -= 1; spawnDoor(); }
+        if (countdownAction >= 16) {
+            countdownAction -= 16;
+            if (currentNumberOfColors < 8) currentNumberOfColors++;
+        }
+        if (countdownAction >= 8) {
+            countdownAction -= 8;
+            if (speed < 50) {
+                speed += 5;
+                speedUpMessageTime = System.currentTimeMillis(); // Trigger "SPEED UP!"
+            }
+        }
+        if (countdownAction >= 4) { countdownAction -= 4; spawnZombie(); }
+        if (countdownAction >= 2) { countdownAction -= 2; spawnKey(); }
+        if (countdownAction >= 1) { countdownAction -= 1; spawnDoor(); }
 
-        playerAnimationCountdown -= speed/10;
+        playerAnimationCountdown -= speed / 10;
         if (playerAnimationCountdown < 1) {
             playerAnimationCountdown += PLAYER_ANIMATION_DURATION;
             playerAnimationFrame = (playerAnimationFrame + 1) % NUMBER_OF_PLAYER_SPRITES;
@@ -205,8 +252,14 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     /** Handle player input */
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_LEFT && currentLane != 0) { currentLane--; playSound("Sounds/MoveLeftRight.wav"); }
-        if (e.getKeyCode() == KeyEvent.VK_RIGHT && currentLane != NUMBER_OF_LANES-1) { currentLane++; playSound("Sounds/MoveLeftRight.wav"); }
+        if (e.getKeyCode() == KeyEvent.VK_LEFT && currentLane != 0) {
+            currentLane--;
+            playSound("Sounds/MoveLeftRight.wav");
+        }
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT && currentLane != NUMBER_OF_LANES-1) {
+            currentLane++;
+            playSound("Sounds/MoveLeftRight.wav");
+        }
         if (e.getKeyCode() == KeyEvent.VK_P || e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             if (timer.isRunning()) { add(pauseMessage); repaint(); timer.stop(); }
             else { remove(pauseMessage); timer.start(); }
@@ -286,7 +339,7 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         }
     }
 
-    /** Handle game over sequence */
+    /** Handle game over */
     void gameOver() {
         if (health >= 3) {
             int option = JOptionPane.showConfirmDialog(this,
