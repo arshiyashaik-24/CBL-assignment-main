@@ -12,7 +12,7 @@ public class TapMatchFruitsMini extends Minigame {
     private List<JButton> selected = new ArrayList<>();
     private int score = 0;
     private int lives = 3;
-    private final int winTarget = 5; // Target score
+    private final int winTarget = 3; // Target score
     private JLabel statusLabel;
     private Random random = new Random();
 

@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.Random;
 import javax.swing.*;
 
+/**
+ * ZombieFruitSequenceMini is a minigame where the player must repeat an increasing sequence
+ * of fruit-button highlights to collect fruits while avoiding losing lives to zombies.
+ */
 public class ZombieFruitSequenceMini extends Minigame {
     private JButton[] buttons = new JButton[4]; // 2x2 grid
     private String[] fruits = {"🍎", "🍌", "🍇", "🍒"}; // Emoji fruits
@@ -21,6 +25,11 @@ public class ZombieFruitSequenceMini extends Minigame {
     private JLabel statusLabel;
     private boolean acceptingInput = false;
 
+    /**
+     * Creates a new Zombie Fruit Sequence minigame.
+     * @param mainGame the main game instance
+     * @param speed the speed factor affecting game duration
+     */
     public ZombieFruitSequenceMini(KeysOfSurvival mainGame, int speed) {
         super(mainGame, speed, "☣ Zombie Fruit Sequence ☣", 30000 / speed);
         timer.stop();
@@ -82,6 +91,9 @@ public class ZombieFruitSequenceMini extends Minigame {
         timer.start();
     }
 
+    /* The button chosen should be highlighted for UX, 
+    so the player understands and remembers the sequence 
+    */
     private void highlightButton(int index) {
         JButton btn = buttons[index];
         Color original = btn.getBackground();
@@ -90,6 +102,11 @@ public class ZombieFruitSequenceMini extends Minigame {
         t.setRepeats(false);
         t.start();
     }
+
+    /**
+     * Handles player input when a fruit button is pressed.
+     * @param index the index of the button pressed
+     */
 
     private void handlePlayerInput(int index) {
         if (!acceptingInput) {
