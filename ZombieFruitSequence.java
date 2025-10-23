@@ -1,27 +1,33 @@
-import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import javax.swing.*;
 
+/**
+ * ZombieFruitSequence is a game where players repeat 
+ * fruit sequences to collect fruits and avoid zombies.
+ */
 public class ZombieFruitSequence extends JFrame {
     private JButton[] buttons = new JButton[4]; // 2x2 grid
     private String[] fruits = {"🍎", "🍌", "🍇", "🍒"}; // Emoji fruits
     private Color[] baseColors = {new Color(60, 20, 20), new Color(90, 60, 20),
-            new Color(30, 30, 60), new Color(60, 20, 60)}; // dark zombie-style colors
+        new Color(30, 30, 60), new Color(60, 20, 60)}; // dark zombie-style colors
     private Color[] highlightColors = {new Color(255, 100, 100), new Color(255, 220, 100),
-            new Color(150, 150, 255), new Color(255, 100, 255)}; // bright for visibility
+        new Color(150, 150, 255), new Color(255, 100, 255)}; // bright for visibility
 
     private List<Integer> sequence = new ArrayList<>();
     private int currentStep = 0;
     private int lives = 3;
     private int fruitsCollected = 0; // New win condition counter
-    private final int WIN_TARGET = 6; // Collect 10 fruits to win
+    private final int winTarget = 6; // Collect 6 fruits to win
     private Random random = new Random();
     private JLabel statusLabel;
     private boolean acceptingInput = false;
 
+    /**
+     * Constructs the ZombieFruitSequence game window and initializes UI components.
+     */
     public ZombieFruitSequence() {
         setTitle("☣ Zombie Fruit Sequence ☣");
         setSize(960, 960);
@@ -37,7 +43,8 @@ public class ZombieFruitSequence extends JFrame {
         add(title);
 
         // Status
-        statusLabel = new JLabel("Lives: " + lives + " | Fruits collected: " + fruitsCollected, SwingConstants.CENTER);
+        statusLabel = new JLabel("Lives: " + lives 
+        + " | Fruits collected: " + fruitsCollected, SwingConstants.CENTER);
         statusLabel.setForeground(Color.LIGHT_GRAY);
         statusLabel.setFont(new Font("Consolas", Font.BOLD, 26));
         statusLabel.setBounds(0, 90, 960, 40);
@@ -64,6 +71,9 @@ public class ZombieFruitSequence extends JFrame {
         startNewRound();
     }
 
+    /**
+     * Starts a new round by adding to the sequence and displaying it.
+     */
     private void startNewRound() {
         acceptingInput = false;
         sequence.add(random.nextInt(4)); // Add a new fruit to sequence each round
@@ -84,6 +94,10 @@ public class ZombieFruitSequence extends JFrame {
         timer.start();
     }
 
+    /**
+     * Highlights a button to show the sequence to the player.
+     * @param index the index of the button to highlight
+     */
     private void highlightButton(int index) {
         JButton btn = buttons[index];
         Color original = btn.getBackground();
@@ -93,15 +107,22 @@ public class ZombieFruitSequence extends JFrame {
         t.start();
     }
 
+    /**
+     * Handles player input when a fruit button is pressed.
+     * @param index the index of the button pressed
+     */
     private void handlePlayerInput(int index) {
-        if (!acceptingInput) return;
+        if (!acceptingInput) {
+            return;
+        }
 
         if (sequence.get(currentStep) == index) {
             currentStep++;
             if (currentStep == sequence.size()) {
                 fruitsCollected++; // Increment fruits collected for winning
-                if (fruitsCollected >= WIN_TARGET) {
-                    JOptionPane.showMessageDialog(this, "🎉 Mission Complete! You collected all fruits safely! ☣");
+                if (fruitsCollected >= winTarget) {
+                    JOptionPane.showMessageDialog(this, 
+                        "🎉 Mission Complete! You collected all fruits safely! ☣");
                     dispose();
                 } else {
                     // Next round after short delay
@@ -124,7 +145,7 @@ public class ZombieFruitSequence extends JFrame {
             }
         }
     }
-
+    
     public static void main(String[] args) {
         SwingUtilities.invokeLater(ZombieFruitSequence::new);
     }

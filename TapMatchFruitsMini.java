@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.Random;
 import javax.swing.*;
 
+/**
+ * TapMatchFruitsMini is a Minigame where the player matches three identical fluids
+ * represented by emoji in a 3x3 grid; it manages the grid buttons, score, and lives.
+ */
 public class TapMatchFruitsMini extends Minigame {
     private JButton[][] gridButtons = new JButton[3][3];
     private String[] fruits = {"🍼", "🥛", "🧃", "🫗"};
@@ -16,6 +20,11 @@ public class TapMatchFruitsMini extends Minigame {
     private JLabel statusLabel;
     private Random random = new Random();
 
+    /**
+     * Constructs a new TapMatchFruitsMini minigame.
+     * @param mainGame the main game instance
+     * @param speed the game speed multiplier
+     */
     public TapMatchFruitsMini(KeysOfSurvival mainGame, int speed) {
         super(mainGame, speed, "☣ Tap Match Fluids ☣", 30000 / speed);
         timer.stop();
@@ -56,11 +65,19 @@ public class TapMatchFruitsMini extends Minigame {
             }
         }
     }
-
+    
+    /**
+     * Returns a random fruit emoji from the available options.
+     * @return a random fruit emoji
+     */
     private String randomFruit() {
         return fruits[random.nextInt(fruits.length)];
     }
 
+    /**
+     * Handles the selection of a tile by the player.
+     * @param btn the button that was selected
+     */
     private void selectTile(JButton btn) {
         if (selected.contains(btn)) {
             return;
@@ -74,6 +91,9 @@ public class TapMatchFruitsMini extends Minigame {
         }
     }
 
+    /**
+     * Checks if the selected tiles match and updates score/lives accordingly.
+     */
     private void checkMatch() {
         String first = selected.get(0).getText();
         boolean allMatch = true;
