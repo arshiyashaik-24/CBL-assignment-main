@@ -339,7 +339,6 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_LEFT && currentLane != 0) {
             currentLane--;
-            playSound("Sounds/MoveLeftRight.wav");
         }
         if (e.getKeyCode() == KeyEvent.VK_RIGHT && currentLane != NUMBER_OF_LANES - 1) {
             currentLane++;
