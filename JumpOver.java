@@ -2,6 +2,10 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+/**
+ * This is a simple minigame where the goal is to jump over a zombie.
+ * The speed of the zombie is proportional to the speed of the main game.
+ */
 public class JumpOver extends Minigame {
     Image background = new ImageIcon("Images/Minigame/Background1.png").getImage();
     Image player = new ImageIcon("Images/Minigame/Player1.png").getImage();
@@ -23,8 +27,8 @@ public class JumpOver extends Minigame {
     
     int playerAltitude = 0;
     int playerVelocity = 0;
-    static final int JUMP_FORCE = 40;
-    static final int GRAVITY = 2;
+    static final int JUMP_FORCE = 30;
+    static final int GRAVITY = 1;
     boolean jumping = false;
 
     JumpOver(KeysOfSurvival mainGame, int speed) {

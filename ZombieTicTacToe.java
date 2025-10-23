@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Random;
 import javax.swing.*;
 
-public class ZombieTicTacToe extends Minigame implements ActionListener {
+public class ZombieTicTacToe extends Minigame {
     private JButton[] buttons = new JButton[9];
     private boolean playerTurn = true;
     private JLabel statusLabel;
