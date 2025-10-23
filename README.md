@@ -37,10 +37,15 @@ Ensure the folder structure is as follows:
 KeysOfSurvival/<br/>
 ├── .vscode/<br/>
 ├── Images/<br/>
-│ ├── sprites/<br/>
+│ ├── doors/<br/>
 │ ├── background/<br/>
+│ ├── player/<br/>
+│ ├── keys/<br/>
 │ └── icons/<br/>
 ├── Sounds/<br/>
+│ ├── dooropens/<br/>
+│ ├── hitobstacle/<br/>
+│ └── keycollected/<br/>
 ├── ConnectWires.java<br/>
 ├── Countdowns.java<br/>
 ├── JumpOver.java<br/>
