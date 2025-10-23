@@ -8,8 +8,28 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
 
+/**
+ * 🗝️ KEYS OF SURVIVAL 🧟
+ * 
+ * This is the main game.
+ * A detailing of features can be be found in the Readme.md file.
+ * 
+ * Usage:
+ * - The game is an endless runner. It never ends unless the player hits an obstacle.
+ * - The game gradually increases in speed. Details are in Countdowns.java.
+ * - There are 3-5 lanes, depending on what was chosen in the main menu of Main.java.
+ * - The player may go to adjacent lanes using the left and right arrow keys.
+ * - There are three obstacle types:
+ *   - Keys:    The player is not stopped by these, but rather collects these.
+ *   - Doors:   If the player has a key of the matching color, his/her score increases.
+ *              Otherwise, the player has to play a minigame.
+ *   - Zombies: The player is stopped by this obstacle unless he dodges it in a minigame
+ * - There are 4 different colors of keys and doors in the start.
+ * - Gradually more colors are added until there are 8 colors.
+ * - To pause, press P or Escape. 
+ */
 public class KeysOfSurvival extends JPanel implements ActionListener, KeyListener {
-    private final KeysOfSurvival thisGame = this;
+    private final KeysOfSurvival thisGame = this; // Reference to this game
     private final Random random = new Random();
 
     public static int NUMBER_OF_LANES;
@@ -27,22 +47,24 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
     public static boolean isMuted = false;
 
     private final Countdowns countdowns = new Countdowns();
-    static final int PLAYER_ANIMATION_DURATION = 4;
+    static final int PLAYER_ANIMATION_DURATION = 4; // 0.08 seconds at starting speed
     static int playerAnimationCountdown = PLAYER_ANIMATION_DURATION;
     static int playerAnimationFrame = 0;
     static final int NUMBER_OF_PLAYER_SPRITES = new File("Images/Player").listFiles().length;
 
+    // Images
     private Image backgroundImage;
     private int backgroundPosition = 0;
     private final Image[] playerImage = new Image[NUMBER_OF_PLAYER_SPRITES];
     private Image peopleIcon;
     private Image heartIcon;
     private Image zombieImage;
-    private final Image[] doorImages = new Image[NUMBER_OF_COLORS];
-    private final Image[] doorImages2 = new Image[NUMBER_OF_COLORS];
+    private final Image[] doorImages = new Image[NUMBER_OF_COLORS]; // Closed door images
+    private final Image[] doorImages2 = new Image[NUMBER_OF_COLORS]; // Opened door images
     private final Image[] keyImages = new Image[NUMBER_OF_COLORS];
     private final Image[] keyIcons = new Image[NUMBER_OF_COLORS];
 
+    // Colors
     static final String[] COLOR_NAMES = 
         {"Red",
         "Green",
@@ -63,21 +85,22 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         new Color(51, 204, 255)};
 
     private final ArrayDeque<Obstacle> obstacles = new ArrayDeque<>();
-    private final int[] currentKeys = new int[NUMBER_OF_COLORS];
+    private final int[] currentKeys = new int[NUMBER_OF_COLORS]; // Array of how many keys collected
     private int score = 0;
     private int health = 0;
     private int doorsOpened = 0;
 
     public javax.swing.Timer timer;
-    private final JLabel pauseMessage;
+    private final JLabel pauseMessage; // Appears when game is paused.
 
     // 🪟 New taskbar + "SPEED UP!" variables
     private static final int TASKBAR_HEIGHT = 80;
     private long speedUpMessageTime = 0;
     private static final int SPEEDUP_DISPLAY_DURATION = 1000; // ms
 
-    /** Constructor without mute */
+    /** Constructor without mute. */
     public KeysOfSurvival(int numberOfLanes) {
+        // Create the frame
         setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
         JFrame frame = new JFrame("Keys of Survival");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -89,26 +112,27 @@ public class KeysOfSurvival extends JPanel implements ActionListener, KeyListene
         frame.addKeyListener(this);
 
         NUMBER_OF_LANES = numberOfLanes;
-        currentLane = numberOfLanes / 2;
+        currentLane = numberOfLanes / 2; // Player starts at middle lane
         loadImages(numberOfLanes);
-
-        timer = new javax.swing.Timer(MILLISECONDS_PER_FRAME, this);
-        timer.start();
 
         pauseMessage = new JLabel("PAUSED", SwingConstants.CENTER);
         pauseMessage.setForeground(Color.WHITE);
         pauseMessage.setFont(new Font("Consolas", Font.BOLD, 64));
         pauseMessage.setBounds(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
+
+        timer = new javax.swing.Timer(MILLISECONDS_PER_FRAME, this);
+        timer.start();
     }
 
-    /** Constructor with mute option */
+    /** Constructor with mute option. */
     public KeysOfSurvival(int lanes, boolean isMuted) {
         this(lanes);
         this.isMuted = isMuted;
     }
 
-    /** Load all game images */
+    /** Load all game images. */
     private void loadImages(int numberOfLanes) {
+        // Load player sprites
         for (int i = 0; i < NUMBER_OF_PLAYER_SPRITES; i++) {
             playerImage[i] = new ImageIcon("Images/Player/" + (i + 1) + ".png").getImage();
         }
